@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <meta charset="utf-8">
+    
+    <title>Java集合干货——ArrayList源码分析 | 夏浅安のブログ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="前言本篇主要通过一些对源码的分析，讲解几个ArrayList常见的方法，以及和Vector的区别。">
+<meta name="keywords" content="Java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java集合干货——ArrayList源码分析">
+<meta property="og:url" content="http://github.com/b2stry/2018/01/13/Java集合干货——ArrayList源码分析/index.html">
+<meta property="og:site_name" content="夏浅安のブログ">
+<meta property="og:description" content="前言本篇主要通过一些对源码的分析，讲解几个ArrayList常见的方法，以及和Vector的区别。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://raw.githubusercontent.com/b2stry/imgrepo/master/java.jpg">
+<meta property="og:updated_time" content="2018-02-03T07:32:26.190Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java集合干货——ArrayList源码分析">
+<meta name="twitter:description" content="前言本篇主要通过一些对源码的分析，讲解几个ArrayList常见的方法，以及和Vector的区别。">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/b2stry/imgrepo/master/java.jpg">
+    
+
+    
+
+    
+        <link rel="icon" href="/images/yu.png" />
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+    
+        <script>
+var _hmt = _hmt || [];
+(function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?865692d8325f5ebc46f2007ac5a4f929";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+	
+})();
+</script>
+
+    
+
+
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+               
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/.">Home</a>
+                
+                    <a class="main-nav-link" href="/archives">Archives</a>
+                
+                    <a class="main-nav-link" href="/categories">Categories</a>
+                
+                    <a class="main-nav-link" href="/tags">Tags</a>
+                
+                    <a class="main-nav-link" href="/about">About</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/images/mianbao.png" />
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/.">Home</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">Archives</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">Categories</a></td>
+                
+                    <td><a class="main-nav-link" href="/tags">Tags</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">About</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/images/mianbao.png" />
+            <h2 id="name">ShallowAn</h2>
+            <h3 id="title">世界远比你想象的更精彩,<br>别放弃!</h3>
+            <span id="location"><i class="fa fa-map-marker"></i>中国, 长沙</span>
+            <a style="margin:20px 50px 10px" id="follow" target="_blank" href="https://github.com/b2stry/">关注</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                42
+                <span>文章</span>
+            </div>
+            <div class="article-info-block">
+                35
+                <span>标签</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="http://main.shallowan.cn" target="_blank" title="home" class=tooltip>
+                            <i class="fa fa-home"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="http://47.93.242.254:8888/mytwitter/" target="_blank" title="twitter" class=tooltip>
+                            <i class="fa fa-twitter"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://weibo.com/shallowAn" target="_blank" title="weibo" class=tooltip>
+                            <i class="fa fa-weibo"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://www.linkedin.com/in/%E9%9C%88-%E5%88%98-250b7b152/" target="_blank" title="linkedin" class=tooltip>
+                            <i class="fa fa-linkedin"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="javascript:window.open('http://www.shallowan.cn/imgrepo/wechatcode.png')" target="_blank" title="weixin" class=tooltip>
+                            <i class="fa fa-weixin"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://github.com/b2stry/" target="_blank" title="github" class=tooltip>
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+</aside>
+
+            
+            <section id="main"><article id="post-Java集合干货——ArrayList源码分析" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+            
+	
+		<img src="https://raw.githubusercontent.com/b2stry/imgrepo/master/java.jpg" class="article-banner" />
+	
+
+
+
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+            Java集合干货——ArrayList源码分析
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/2018/01/13/Java集合干货——ArrayList源码分析/">
+            <time datetime="2018-01-13T08:19:58.000Z" itemprop="datePublished">2018-01-13</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/Java/">Java</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Java/">Java</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>本篇主要通过一些对源码的分析，讲解几个ArrayList常见的方法，以及和Vector的区别。<br><a id="more"></a></p>
+<h3 id="ArrayList"><a href="#ArrayList" class="headerlink" title="ArrayList"></a>ArrayList</h3><h4 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ArrayList</span>&lt;<span class="title">E</span>&gt; <span class="keyword">extends</span> <span class="title">AbstractList</span>&lt;<span class="title">E</span>&gt;</span></div><div class="line"><span class="class">        <span class="keyword">implements</span> <span class="title">List</span>&lt;<span class="title">E</span>&gt;, <span class="title">RandomAccess</span>, <span class="title">Cloneable</span>, <span class="title">java</span>.<span class="title">io</span>.<span class="title">Serializable</span></span></div></pre></td></tr></table></figure>
+<p>ArrayList实际上是一个动态数组，容量可以动态的增长，其继承了AbstractList，实现了List, RandomAccess, Cloneable, java.io.Serializable这些接口。</p>
+<p>RandomAccess接口，被List实现之后，为List提供了随机访问功能，也就是通过下标获取元素对象的功能。</p>
+<p>实现了Cloneable, java.io.Serializable意味着可以被克隆和序列化。</p>
+<h4 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h4><p>在使用中我们经常需要new出来各种泛型的ArrayList，那么在初始化过程是怎样的呢？</p>
+<p>如下一行代码，创建一个ArrayList对象<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">List&lt;Person&gt; list = <span class="keyword">new</span> ArrayList&lt;&gt;();</div></pre></td></tr></table></figure></p>
+<p>我们来看源码，是如何初始化的，找到构造方法<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//无参构造方法</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">ArrayList</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="keyword">super</span>();</div><div class="line">  <span class="keyword">this</span>.elementData = EMPTY_ELEMENTDATA;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>看到这些代码的时候，我也是不解的，elementData和EMPTY_ELEMENTDATA是什么啊？但是很明显EMPTY_ELEMENTDATA是一个常量，追本溯源我们去看一下成员属性。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//如果是无参构造方法创建对象的话，ArrayList的初始化长度为10，这是一个静态常量</span></div><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DEFAULT_CAPACITY = <span class="number">10</span>;</div><div class="line"></div><div class="line"><span class="comment">//在这里可以看到我们不解的EMPTY_ELEMENTDATA实际上是一个空的对象数组</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Object[] EMPTY_ELEMENTDATA = &#123;&#125;;</div><div class="line"></div><div class="line"><span class="comment">//保存ArrayList数据的对象数组缓冲区 空的ArrayList的elementData = EMPTY_ELEMENTDATA 这就是为什么说ArrayList底层是数组实现的了。elementData的初始容量为10，大小会根据ArrayList容量的增长而动态的增长。</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">transient</span> Object[] elementData;</div><div class="line"><span class="comment">//集合的长度</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> size;</div></pre></td></tr></table></figure></p>
+<p>执行完构造方法，如下图</p>
+<p><img src="https://user-gold-cdn.xitu.io/2018/1/12/160ea59dacef93e0?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" alt=""></p>
+<p>可以说ArrayList的作者真的是很贴心，连缓存都处理好了，多次new出来的新对象，都执行同一个引用。</p>
+<h4 id="添加方法add"><a href="#添加方法add" class="headerlink" title="添加方法add"></a>添加方法add</h4><h5 id="add-E-e"><a href="#add-E-e" class="headerlink" title="add(E e)"></a>add(E e)</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"> <span class="comment">/**</span></div><div class="line"><span class="comment">     * Appends the specified element to the end of this list.</span></div><div class="line"><span class="comment">     */</span></div><div class="line"><span class="comment">//增加元素到集合的最后</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">add</span><span class="params">(E e)</span> </span>&#123;</div><div class="line">  ensureCapacityInternal(size + <span class="number">1</span>);  <span class="comment">// Increments modCount!!</span></div><div class="line">  <span class="comment">//因为++运算符的特点 先使用后运算  这里实际上是</span></div><div class="line">  <span class="comment">//elementData[size] = e</span></div><div class="line">  <span class="comment">//size+1</span></div><div class="line">  elementData[size++] = e;</div><div class="line">  <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>先不管ensureCapacityInternal的话，这个方法就是将一个元素增加到数组的size++位置上。</p>
+<p>再说回ensureCapacityInternal，它是用来扩容的，准确说是用来进行扩容检查的。下面我们来看一下整个扩容的过程<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//初始长度是10，size默认值0，假定添加的是第一个元素，那么minCapacity=1 这是最小容量 如果小于这个容量就会报错</span></div><div class="line"><span class="comment">//如果底层数组就是默认数组，那么选一个大的值，就是10</span></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">ensureCapacityInternal</span><span class="params">(<span class="keyword">int</span> minCapacity)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (elementData == EMPTY_ELEMENTDATA) &#123;</div><div class="line">            minCapacity = Math.max(DEFAULT_CAPACITY, minCapacity);</div><div class="line">        &#125;</div><div class="line">		<span class="comment">//调用另一个方法ensureExplicitCapacity</span></div><div class="line">        ensureExplicitCapacity(minCapacity);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">ensureExplicitCapacity</span><span class="params">(<span class="keyword">int</span> minCapacity)</span> </span>&#123;</div><div class="line">      <span class="comment">//记录修改的次数</span></div><div class="line">        modCount++;</div><div class="line"></div><div class="line">        <span class="comment">// overflow-conscious code</span></div><div class="line">      <span class="comment">//如果传过来的值大于初始长度 执行grow方法（参数为传过来的值）扩容</span></div><div class="line">        <span class="keyword">if</span> (minCapacity - elementData.length &gt; <span class="number">0</span>)</div><div class="line">            grow(minCapacity);</div><div class="line">    &#125;</div><div class="line"><span class="comment">//真正的扩容</span></div><div class="line"> <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">grow</span><span class="params">(<span class="keyword">int</span> minCapacity)</span> </span>&#123;</div><div class="line">        <span class="comment">// overflow-conscious code</span></div><div class="line">        <span class="keyword">int</span> oldCapacity = elementData.length;</div><div class="line">   <span class="comment">//新的容量是在原有的容量基础上+50% 右移一位就是二分之一</span></div><div class="line">        <span class="keyword">int</span> newCapacity = oldCapacity + (oldCapacity &gt;&gt; <span class="number">1</span>);</div><div class="line">   <span class="comment">//如果新容量小于最小容量，按照最小容量进行扩容</span></div><div class="line">        <span class="keyword">if</span> (newCapacity - minCapacity &lt; <span class="number">0</span>)</div><div class="line">            newCapacity = minCapacity;</div><div class="line">        <span class="keyword">if</span> (newCapacity - MAX_ARRAY_SIZE &gt; <span class="number">0</span>)</div><div class="line">            newCapacity = hugeCapacity(minCapacity);</div><div class="line">        <span class="comment">// minCapacity is usually close to size, so this is a win:</span></div><div class="line">   <span class="comment">//这里是重点 调用工具类Arrays的copyOf扩容</span></div><div class="line">        elementData = Arrays.copyOf(elementData, newCapacity);</div><div class="line">    &#125;</div><div class="line"></div><div class="line"><span class="comment">//Arrays</span></div><div class="line"><span class="keyword">public</span> <span class="keyword">static</span> &lt;T,U&gt; T[] copyOf(U[] original, <span class="keyword">int</span> newLength, Class&lt;? extends T[]&gt; newType) &#123;</div><div class="line">  T[] copy = ((Object)newType == (Object)Object[].class)</div><div class="line">    ? (T[]) <span class="keyword">new</span> Object[newLength]</div><div class="line">    : (T[]) Array.newInstance(newType.getComponentType(), newLength);</div><div class="line">  System.arraycopy(original, <span class="number">0</span>, copy, <span class="number">0</span>,</div><div class="line">                   Math.min(original.length, newLength));</div><div class="line">  <span class="keyword">return</span> copy;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h5 id="add-int-index-E-element"><a href="#add-int-index-E-element" class="headerlink" title="add(int index, E element)"></a>add(int index, E element)</h5><p>添加到指定的位置<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">add</span><span class="params">(<span class="keyword">int</span> index, E element)</span> </span>&#123;</div><div class="line">  <span class="comment">//判断索引是否越界，如果越界就会抛出下标越界异常</span></div><div class="line">  rangeCheckForAdd(index);</div><div class="line"><span class="comment">//扩容检查</span></div><div class="line">  ensureCapacityInternal(size + <span class="number">1</span>);  <span class="comment">// Increments modCount!!</span></div><div class="line">  <span class="comment">//将指定下标空出 具体作法就是index及其后的所有元素后移一位</span></div><div class="line">  System.arraycopy(elementData, index, elementData, index + <span class="number">1</span>,size - index);</div><div class="line">  <span class="comment">//将要添加元素赋值到空出来的指定下标处</span></div><div class="line">  elementData[index] = element;</div><div class="line">  <span class="comment">//长度加1</span></div><div class="line">  size++;</div><div class="line">&#125;</div><div class="line"><span class="comment">//判断是否出现下标是否越界</span></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">rangeCheckForAdd</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</div><div class="line">  <span class="comment">//如果下标超过了集合的尺寸 或者 小于0就是越界</span></div><div class="line">  <span class="keyword">if</span> (index &gt; size || index &lt; <span class="number">0</span>)</div><div class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> IndexOutOfBoundsException(outOfBoundsMsg(index));</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h5 id="remove-int-index"><a href="#remove-int-index" class="headerlink" title="remove(int index)"></a>remove(int index)</h5><p>ArrayList支持两种删除元素的方式</p>
+<ul>
+<li>remove(int index) 按照下标删除 常用</li>
+<li>remove(Object o) 按照元素删除 会删除和参数匹配的第一个元素</li>
+</ul>
+<p>下面我们看一下ArrayList的实现<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div></pre></td><td class="code"><pre><div class="line"> <span class="comment">/**</span></div><div class="line"><span class="comment"> 移除list中指定位置的元素</span></div><div class="line"><span class="comment">     * Removes the element at the specified position in this list.</span></div><div class="line"><span class="comment">     所有后续元素左移 下标减1</span></div><div class="line"><span class="comment">     * Shifts any subsequent elements to the left (subtracts one from their</span></div><div class="line"><span class="comment">     * indices).</span></div><div class="line"><span class="comment">     *参数是要移除元素的下标</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> index the index of the element to be removed</span></div><div class="line"><span class="comment">     返回值是被移除的元素</span></div><div class="line"><span class="comment">     * <span class="doctag">@return</span> the element that was removed from the list</span></div><div class="line"><span class="comment">     * <span class="doctag">@throws</span> IndexOutOfBoundsException &#123;<span class="doctag">@inheritDoc</span>&#125;</span></div><div class="line"><span class="comment">     */</span></div><div class="line"><span class="function"><span class="keyword">public</span> E <span class="title">remove</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</div><div class="line">  <span class="comment">//下标越界检查</span></div><div class="line">  rangeCheck(index);</div><div class="line"><span class="comment">//修改次数统计</span></div><div class="line">  modCount++;</div><div class="line">  <span class="comment">//获取这个下标上的值</span></div><div class="line">  E oldValue = elementData(index);</div><div class="line"><span class="comment">//计算出需要移动的元素个数 （因为需要将后续元素左移一位 此处计算出来的是后续元素的位数）</span></div><div class="line">  <span class="keyword">int</span> numMoved = size - index - <span class="number">1</span>;</div><div class="line">  <span class="comment">//如果这个值大于0 说明后续有元素需要左移  是0说明被移除的对象就是最后一位元素</span></div><div class="line">  <span class="keyword">if</span> (numMoved &gt; <span class="number">0</span>)</div><div class="line">    <span class="comment">//索引index只有的所有元素左移一位  覆盖掉index位置上的元素</span></div><div class="line">    System.arraycopy(elementData, index+<span class="number">1</span>, elementData, index,numMoved);</div><div class="line"> <span class="comment">// 将最后一个元素赋值为null  这样就可以被gc回收了</span></div><div class="line">  elementData[--size] = <span class="keyword">null</span>; <span class="comment">// clear to let GC do its work</span></div><div class="line"><span class="comment">//返回index位置上的元素</span></div><div class="line">  <span class="keyword">return</span> oldValue;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//移除特定元素</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">remove</span><span class="params">(Object o)</span> </span>&#123;</div><div class="line">  <span class="comment">//如果元素是null 遍历数组移除第一个null</span></div><div class="line">  <span class="keyword">if</span> (o == <span class="keyword">null</span>) &#123;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> index = <span class="number">0</span>; index &lt; size; index++)</div><div class="line">      <span class="keyword">if</span> (elementData[index] == <span class="keyword">null</span>) &#123;</div><div class="line">        <span class="comment">//遍历找到第一个null元素的下标 调用下标移除元素的方法</span></div><div class="line">        fastRemove(index);</div><div class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">      &#125;</div><div class="line">  &#125; <span class="keyword">else</span> &#123;</div><div class="line">    <span class="comment">//找到元素对应的下标 调用下标移除元素的方法</span></div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> index = <span class="number">0</span>; index &lt; size; index++)</div><div class="line">      <span class="keyword">if</span> (o.equals(elementData[index])) &#123;</div><div class="line">        fastRemove(index);</div><div class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">      &#125;</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//按照下标移除元素</span></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">fastRemove</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</div><div class="line">  modCount++;</div><div class="line">  <span class="keyword">int</span> numMoved = size - index - <span class="number">1</span>;</div><div class="line">  <span class="keyword">if</span> (numMoved &gt; <span class="number">0</span>)</div><div class="line">    System.arraycopy(elementData, index+<span class="number">1</span>, elementData, index,</div><div class="line">                     numMoved);</div><div class="line">  elementData[--size] = <span class="keyword">null</span>; <span class="comment">// clear to let GC do its work</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>ArrayList总结</p>
+<ul>
+<li>底层数组实现，使用默认构造方法初始化出来的容量是10</li>
+<li>扩容的长度是在原长度基础上加二分之一</li>
+<li>实现了RandomAccess接口，底层又是数组，get读取元素性能很好</li>
+<li>线程不安全，所有的方法均不是同步方法也没有加锁，因此多线程下慎用</li>
+<li>顺序添加很方便</li>
+<li>删除和插入需要复制数组 性能很差（可以使用LinkindList）</li>
+</ul>
+<h5 id="为什么ArrayList的elementData是用transient修饰的？"><a href="#为什么ArrayList的elementData是用transient修饰的？" class="headerlink" title="为什么ArrayList的elementData是用transient修饰的？"></a>为什么ArrayList的elementData是用transient修饰的？</h5><p>transient修饰的属性意味着不会被序列化，也就是说在序列化ArrayList的时候，不序列化elementData。</p>
+<p>为什么要这么做呢？</p>
+<ul>
+<li>elementData不总是满的，每次都序列化，会浪费时间和空间</li>
+<li>重写了writeObject 保证序列化的时候虽然不序列化全部 但是有的元素都序列化</li>
+</ul>
+<p>所以说不是不序列化 而是不全部序列化。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">writeObject</span><span class="params">(java.io.ObjectOutputStream s)</span></span></div><div class="line"><span class="function">        <span class="keyword">throws</span> java.io.IOException</span>&#123;</div><div class="line"><span class="comment">// Write out element count, and any hidden stuff</span></div><div class="line"><span class="keyword">int</span> expectedModCount = modCount;</div><div class="line">s.defaultWriteObject();</div><div class="line">        <span class="comment">// Write out array length</span></div><div class="line">       s.writeInt(elementData.length);</div><div class="line">    <span class="comment">// Write out all elements in the proper order.</span></div><div class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;size; i++)</div><div class="line">           s.writeObject(elementData[i]);</div><div class="line">    <span class="keyword">if</span> (modCount != expectedModCount) &#123;</div><div class="line">           <span class="keyword">throw</span> <span class="keyword">new</span> ConcurrentModificationException();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h4 id="ArrayList和Vector的区别"><a href="#ArrayList和Vector的区别" class="headerlink" title="ArrayList和Vector的区别"></a>ArrayList和Vector的区别</h4><h5 id="标准答案"><a href="#标准答案" class="headerlink" title="标准答案"></a>标准答案</h5><ul>
+<li>ArrayList是线程不安全的，Vector是线程安全的</li>
+<li>扩容时候ArrayList扩0.5倍，Vector扩1倍</li>
+</ul>
+<p>那么问题来了</p>
+<h4 id="ArrayList有没有办法线程安全？"><a href="#ArrayList有没有办法线程安全？" class="headerlink" title="ArrayList有没有办法线程安全？"></a>ArrayList有没有办法线程安全？</h4><p>Collections工具类有一个synchronizedList方法</p>
+<p>可以把list变为线程安全的集合，但是意义不大，因为可以使用Vector</p>
+<h4 id="Vector为什么是线程安全的？"><a href="#Vector为什么是线程安全的？" class="headerlink" title="Vector为什么是线程安全的？"></a>Vector为什么是线程安全的？</h4><p>老实讲，抛开多线程    它俩区别没多大，但是多线程下就不一样了，那么Vector是如何实现线程安全的，我们来看几个关键方法<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">boolean</span> <span class="title">add</span><span class="params">(E e)</span> </span>&#123;</div><div class="line">  modCount++;</div><div class="line">  ensureCapacityHelper(elementCount + <span class="number">1</span>);</div><div class="line">  elementData[elementCount++] = e;</div><div class="line">  <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> E <span class="title">remove</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</div><div class="line">  modCount++;</div><div class="line">  <span class="keyword">if</span> (index &gt;= elementCount)</div><div class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> ArrayIndexOutOfBoundsException(index);</div><div class="line">  E oldValue = elementData(index);</div><div class="line"></div><div class="line">  <span class="keyword">int</span> numMoved = elementCount - index - <span class="number">1</span>;</div><div class="line">  <span class="keyword">if</span> (numMoved &gt; <span class="number">0</span>)</div><div class="line">    System.arraycopy(elementData, index+<span class="number">1</span>, elementData, index,</div><div class="line">                     numMoved);</div><div class="line">  elementData[--elementCount] = <span class="keyword">null</span>; <span class="comment">// Let gc do its work</span></div><div class="line"></div><div class="line">  <span class="keyword">return</span> oldValue;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>就代码实现上来说，和ArrayList并没有很多逻辑上的区别，但是在Vector的关键方法都使用了synchronized修饰。</p>
+<blockquote>
+<p>作者：冰洋<br>链接：<a href="https://juejin.im/post/5a58aa62f265da3e4d72a51b" target="_blank" rel="external">https://juejin.im/post/5a58aa62f265da3e4d72a51b</a><br>来源：掘金</p>
+</blockquote>
+
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+
+</div>
+
+    <a data-url="http://github.com/b2stry/2018/01/13/Java集合干货——ArrayList源码分析/" data-id="cjizjt0dg0008uoqeg2bj8pfl" class="article-share-link"><i class="fa fa-share"></i>分享</a>
+<script>
+    (function ($) {
+        // Prevent duplicate binding
+        if (typeof(__SHARE_BUTTON_BINDED__) === 'undefined' || !__SHARE_BUTTON_BINDED__) {
+            __SHARE_BUTTON_BINDED__ = true;
+        } else {
+            return;
+        }
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="fa fa-twitter article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="fa fa-facebook article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="fa fa-pinterest article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="fa fa-google article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+            
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2018/01/14/慕课网-Spring-Boot技术栈博客企业前后端-开篇/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    慕课网---Spring Boot企业级博客系统实战(开篇)
+                
+            </div>
+        </a>
+    
+    
+        <a href="/2017/12/26/javap指令集/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">Javap指令集</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+
+</section>
+            
+                
+<aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/9420/04/02/《阿里感悟》如何在三年内成长为一名技术专家？/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/读书/">读书</a></p>
+                            <p class="item-title"><a href="/9420/04/02/《阿里感悟》如何在三年内成长为一名技术专家？/" class="title">【置顶】《阿里感悟》如何在三年内成长为一名技术专家？</a></p>
+                            <p class="item-date"><time datetime="9420-04-02T07:14:07.000Z" itemprop="datePublished">9420-04-02</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/03/21/远程通信的几种选择/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/远程通信/">远程通信</a></p>
+                            <p class="item-title"><a href="/2018/03/21/远程通信的几种选择/" class="title">远程通信的几种选择</a></p>
+                            <p class="item-date"><time datetime="2018-03-21T14:19:26.000Z" itemprop="datePublished">2018-03-21</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/03/17/Tomcat-性能调优/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/tomcat调优/">tomcat调优</a></p>
+                            <p class="item-title"><a href="/2018/03/17/Tomcat-性能调优/" class="title">Tomcat 性能调优</a></p>
+                            <p class="item-date"><time datetime="2018-03-17T14:53:21.000Z" itemprop="datePublished">2018-03-17</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/03/13/Map中的hash/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/hash/">hash</a></p>
+                            <p class="item-title"><a href="/2018/03/13/Map中的hash/" class="title">Map中的hash()</a></p>
+                            <p class="item-date"><time datetime="2018-03-13T11:08:46.000Z" itemprop="datePublished">2018-03-13</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/03/05/springboot集成swagger2，构建优雅的Restful-API/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/swagger/">swagger</a></p>
+                            <p class="item-title"><a href="/2018/03/05/springboot集成swagger2，构建优雅的Restful-API/" class="title">Spring Boot集成Swagger2，构建优雅的Restful API</a></p>
+                            <p class="item-date"><time datetime="2018-03-05T08:20:46.000Z" itemprop="datePublished">2018-03-05</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Ajax/">Ajax</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Elasticsearch/">Elasticsearch</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Js/">Js</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring-Boot/">Spring Boot</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/activemq/">activemq</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/algorithm/">algorithm</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/command/">command</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/docker/">docker</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/fetch/">fetch</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/hash/">hash</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/interview/">interview</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jsr303/">jsr303</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/kafka/">kafka</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/network/">network</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/python/">python</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/rabbitmq/">rabbitmq</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/redis/">redis</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/regex/">regex</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/spring/">spring</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/sql/">sql</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/swagger/">swagger</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/thymeleaf/">thymeleaf</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/tomcat调优/">tomcat调优</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/消息中间件/">消息中间件</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/读书/">读书</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/远程通信/">远程通信</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/集群/">集群</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/集群/分布式/">分布式</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/集群/分布式/云计算/">云计算</a><span class="category-list-count">1</span></li></ul></li></ul></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">归档</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/9420/04/">April 9420</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a><span class="archive-list-count">2</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签</h3>
+        <div class="widget">
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ajax/">Ajax</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Elasticsearch/">Elasticsearch</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JSP/">JSP</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Boot/">Spring Boot</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/fetch/">fetch</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hash/">hash</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jsr303/">jsr303</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/">linux</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/">mysql</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/">redis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring/">spring</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql/">sql</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/swagger/">swagger</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/thymeleaf/">thymeleaf</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat调优/">tomcat调优</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vim/">vim</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/一键评教/">一键评教</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/云计算/">云计算</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/分布式/">分布式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/正则表达式/">正则表达式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/消息中间件/">消息中间件</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/计算机网络/">计算机网络</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/读书/">读书</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/远程通信/">远程通信</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/集群/">集群</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/面试/">面试</a><span class="tag-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签云</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/Ajax/" style="font-size: 13.33px;">Ajax</a> <a href="/tags/Elasticsearch/" style="font-size: 10px;">Elasticsearch</a> <a href="/tags/JSP/" style="font-size: 10px;">JSP</a> <a href="/tags/Java/" style="font-size: 13.33px;">Java</a> <a href="/tags/Python/" style="font-size: 10px;">Python</a> <a href="/tags/Spring-Boot/" style="font-size: 16.67px;">Spring Boot</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/fetch/" style="font-size: 10px;">fetch</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/hash/" style="font-size: 10px;">hash</a> <a href="/tags/java/" style="font-size: 13.33px;">java</a> <a href="/tags/jsr303/" style="font-size: 10px;">jsr303</a> <a href="/tags/linux/" style="font-size: 13.33px;">linux</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/python/" style="font-size: 13.33px;">python</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a> <a href="/tags/shell/" style="font-size: 13.33px;">shell</a> <a href="/tags/spring/" style="font-size: 10px;">spring</a> <a href="/tags/sql/" style="font-size: 10px;">sql</a> <a href="/tags/swagger/" style="font-size: 10px;">swagger</a> <a href="/tags/thymeleaf/" style="font-size: 10px;">thymeleaf</a> <a href="/tags/tomcat/" style="font-size: 10px;">tomcat</a> <a href="/tags/tomcat调优/" style="font-size: 10px;">tomcat调优</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/一键评教/" style="font-size: 10px;">一键评教</a> <a href="/tags/云计算/" style="font-size: 10px;">云计算</a> <a href="/tags/分布式/" style="font-size: 10px;">分布式</a> <a href="/tags/正则表达式/" style="font-size: 10px;">正则表达式</a> <a href="/tags/消息中间件/" style="font-size: 20px;">消息中间件</a> <a href="/tags/算法/" style="font-size: 13.33px;">算法</a> <a href="/tags/计算机网络/" style="font-size: 10px;">计算机网络</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/远程通信/" style="font-size: 10px;">远程通信</a> <a href="/tags/集群/" style="font-size: 10px;">集群</a> <a href="/tags/面试/" style="font-size: 10px;">面试</a>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">友情链接(排名不分先后)</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a target="_blank" href="http://ifeve.com/">并发编程网</a>
+                    </li>
+                
+                    <li>
+                        <a target="_blank" href="http://www.sivan0222.cn">吴晓文</a>
+                    </li>
+                
+                    <li>
+                        <a target="_blank" href="http://www.rxdonny.com">唐仁鑫</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+
+            
+        </div>
+        <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<footer id="footer">
+	
+    <div class="outer">
+    	<a target="_blank" href="https://github.com/b2stry"><span class="fa-stack fa-lg">
+                                <i class="fa fa-github fa-stack-2x fa-inverse" style="color:#898d92"></i></span></a>
+        <div id="footer-info" class="inner">
+            Copyright&nbsp;&copy; 2018 <a href="https://github.com/B2stry" target="_blank">Shallow An</a>  &nbsp;&nbsp;<br><span id="busuanzi_container_site_pv" style="font-size:13px"> 
+  		pv: <span id="busuanzi_value_site_pv" style="font-size:10px"></span>
+	</span><br>&nbsp;&nbsp;いつからか好きになっていました<br>中心藏之，何日忘之<br><br>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="http://github.com/ppoffice" target="_blank">PPOffice</a>
+        </div>
+    </div>
+</footer>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?95a2d1c2cf767a8efae55252dd5e5de4";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+        
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+        <script type="text/x-mathjax-config">
+            MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
+</html>

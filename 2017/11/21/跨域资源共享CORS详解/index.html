@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <meta charset="utf-8">
+    
+    <title>跨域资源共享CORS详解 | 夏浅安のブログ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="CORS是一个W3C标准，全称是”跨域资源共享”（Cross-origin resource sharing）。 它允许浏览器向跨源服务器，发出XMLHttpRequest请求，从而克服了AJAX只能同源使用的限制。 本文详细介绍CORS的内部机制。">
+<meta name="keywords" content="Ajax">
+<meta property="og:type" content="article">
+<meta property="og:title" content="跨域资源共享CORS详解">
+<meta property="og:url" content="http://github.com/b2stry/2017/11/21/跨域资源共享CORS详解/index.html">
+<meta property="og:site_name" content="夏浅安のブログ">
+<meta property="og:description" content="CORS是一个W3C标准，全称是”跨域资源共享”（Cross-origin resource sharing）。 它允许浏览器向跨源服务器，发出XMLHttpRequest请求，从而克服了AJAX只能同源使用的限制。 本文详细介绍CORS的内部机制。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1516432511&di=d5a9a01b3be64acaccb366132eac8649&imgtype=jpg&er=1&src=http%3A%2F%2Fimg.mukewang.com%2F57aeec480001f43306400300.jpg">
+<meta property="og:updated_time" content="2018-01-13T12:49:40.114Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="跨域资源共享CORS详解">
+<meta name="twitter:description" content="CORS是一个W3C标准，全称是”跨域资源共享”（Cross-origin resource sharing）。 它允许浏览器向跨源服务器，发出XMLHttpRequest请求，从而克服了AJAX只能同源使用的限制。 本文详细介绍CORS的内部机制。">
+<meta name="twitter:image" content="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1516432511&di=d5a9a01b3be64acaccb366132eac8649&imgtype=jpg&er=1&src=http%3A%2F%2Fimg.mukewang.com%2F57aeec480001f43306400300.jpg">
+    
+
+    
+
+    
+        <link rel="icon" href="/images/yu.png" />
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+    
+        <script>
+var _hmt = _hmt || [];
+(function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?865692d8325f5ebc46f2007ac5a4f929";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+	
+})();
+</script>
+
+    
+
+
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+               
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/.">Home</a>
+                
+                    <a class="main-nav-link" href="/archives">Archives</a>
+                
+                    <a class="main-nav-link" href="/categories">Categories</a>
+                
+                    <a class="main-nav-link" href="/tags">Tags</a>
+                
+                    <a class="main-nav-link" href="/about">About</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/images/mianbao.png" />
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/.">Home</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">Archives</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">Categories</a></td>
+                
+                    <td><a class="main-nav-link" href="/tags">Tags</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">About</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/images/mianbao.png" />
+            <h2 id="name">ShallowAn</h2>
+            <h3 id="title">世界远比你想象的更精彩,<br>别放弃!</h3>
+            <span id="location"><i class="fa fa-map-marker"></i>中国, 长沙</span>
+            <a style="margin:20px 50px 10px" id="follow" target="_blank" href="https://github.com/b2stry/">关注</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                42
+                <span>文章</span>
+            </div>
+            <div class="article-info-block">
+                35
+                <span>标签</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="http://main.shallowan.cn" target="_blank" title="home" class=tooltip>
+                            <i class="fa fa-home"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="http://47.93.242.254:8888/mytwitter/" target="_blank" title="twitter" class=tooltip>
+                            <i class="fa fa-twitter"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://weibo.com/shallowAn" target="_blank" title="weibo" class=tooltip>
+                            <i class="fa fa-weibo"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://www.linkedin.com/in/%E9%9C%88-%E5%88%98-250b7b152/" target="_blank" title="linkedin" class=tooltip>
+                            <i class="fa fa-linkedin"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="javascript:window.open('http://www.shallowan.cn/imgrepo/wechatcode.png')" target="_blank" title="weixin" class=tooltip>
+                            <i class="fa fa-weixin"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://github.com/b2stry/" target="_blank" title="github" class=tooltip>
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+</aside>
+
+            
+            <section id="main"><article id="post-跨域资源共享CORS详解" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+            
+	
+		<img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1516432511&di=d5a9a01b3be64acaccb366132eac8649&imgtype=jpg&er=1&src=http%3A%2F%2Fimg.mukewang.com%2F57aeec480001f43306400300.jpg" class="article-banner" />
+	
+
+
+
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+            跨域资源共享CORS详解
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/2017/11/21/跨域资源共享CORS详解/">
+            <time datetime="2017-11-21T03:48:44.000Z" itemprop="datePublished">2017-11-21</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/Ajax/">Ajax</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Ajax/">Ajax</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <p><code>CORS</code>是一个<code>W3C</code>标准，全称是”跨域资源共享”（<code>Cross-origin resource sharing</code>）。</p>
+<p>它允许浏览器向跨源服务器，发出<code>XMLHttpRequest</code>请求，从而克服了AJAX只能同源使用的限制。</p>
+<p>本文详细介绍<code>CORS</code>的内部机制。</p>
+<a id="more"></a>
+<h3 id="一、简介"><a href="#一、简介" class="headerlink" title="一、简介"></a>一、简介</h3><p><code>CORS</code>需要浏览器和服务器同时支持。目前，所有浏览器都支持该功能，<code>IE浏览器</code>不能低于<code>IE10</code>。</p>
+<p>整个<code>CORS</code>通信过程，都是浏览器自动完成，不需要用户参与。对于开发者来说，<code>CORS</code>通信与同源的<code>AJAX</code>通信没有差别，代码完全一样。浏览器一旦发现<code>AJAX</code>请求跨源，就会自动添加一些附加的头信息，有时还会多出一次附加的请求，但用户不会有感觉。</p>
+<p>因此，实现<code>CORS</code>通信的关键是服务器。只要服务器实现了<code>CORS</code>接口，就可以跨源通信。</p>
+<h3 id="二、两种请求"><a href="#二、两种请求" class="headerlink" title="二、两种请求"></a>二、两种请求</h3><p>浏览器将CORS请求分成两类：简单请求（<code>simple request</code>）和非简单请求（<code>not-so-simple request</code>）。</p>
+<p>只要同时满足以下两大条件，就属于简单请求。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">（1) 请求方法是以下三种方法之一：</div><div class="line">HEAD</div><div class="line">GET</div><div class="line">POST</div><div class="line">（2）HTTP的头信息不超出以下几种字段：</div><div class="line">Accept</div><div class="line">Accept-Language</div><div class="line">Content-Language</div><div class="line">Last-Event-ID</div><div class="line">Content-Type：只限于三个值:</div><div class="line">application/x-www-form-urlencoded、</div><div class="line">multipart/form-data、</div><div class="line">text/plain</div></pre></td></tr></table></figure></p>
+<p>凡是不同时满足上面两个条件，就属于非简单请求。<br>浏览器对这两种请求的处理，是不一样的。</p>
+<h3 id="三、简单请求"><a href="#三、简单请求" class="headerlink" title="三、简单请求"></a>三、简单请求</h3><h4 id="3-1-基本流程"><a href="#3-1-基本流程" class="headerlink" title="3.1 基本流程"></a>3.1 基本流程</h4><p>对于简单请求，浏览器直接发出<code>CORS</code>请求。具体来说，就是在头信息之中，增加一个<code>Origin</code>字段。</p>
+<p>下面是一个例子，浏览器发现这次跨源<code>AJAX</code>请求是简单请求，就自动在头信息之中，添加一个<code>Origin</code>字段。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">GET /cors HTTP/1.1</div><div class="line">Origin: http://api.bob.com</div><div class="line">Host: api.alice.com</div><div class="line">Accept-Language: en-US</div><div class="line">Connection: keep-alive</div><div class="line">User-Agent: Mozilla/5.0...</div></pre></td></tr></table></figure></p>
+<p>上面的头信息中，<code>Origin</code>字段用来说明，本次请求来自哪个源（协议 + 域名 + 端口）。服务器根据这个值，决定是否同意这次请求。</p>
+<p>如果<code>Origin</code>指定的源，不在许可范围内，服务器会返回一个正常的HTTP回应。浏览器发现，这个回应的头信息没有包含<code>Access-Control-Allow-Origin</code>字段（详见下文），就知道出错了，从而抛出一个错误，被<code>XMLHttpRequest</code>的<code>onerror</code>回调函数捕获。注意，这种错误无法通过状态码识别，因为<code>HTTP</code>回应的状态码有可能是<code>200</code>。<br>如果<code>Origin</code>指定的域名在许可范围内，服务器返回的响应，会多出几个头信息字段。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Access-Control-Allow-Origin: http://api.bob.com</div><div class="line">Access-Control-Allow-Credentials: true</div><div class="line">Access-Control-Expose-Headers: FooBar</div><div class="line">Content-Type: text/html; charset=utf-8</div></pre></td></tr></table></figure></p>
+<p>上面的头信息之中，有三个与<code>CORS</code>请求相关的字段，都以<code>Access-Control-</code>开头。</p>
+<h5 id="（1）Access-Control-Allow-Origin"><a href="#（1）Access-Control-Allow-Origin" class="headerlink" title="（1）Access-Control-Allow-Origin"></a>（1）Access-Control-Allow-Origin</h5><p>该字段是必须的。它的值要么是请求时<code>Origin</code>字段的值，要么是一个<code>*</code>，表示接受任意域名的请求。</p>
+<h5 id="（2）Access-Control-Allow-Credentials"><a href="#（2）Access-Control-Allow-Credentials" class="headerlink" title="（2）Access-Control-Allow-Credentials"></a>（2）Access-Control-Allow-Credentials</h5><p>该字段可选。它的值是一个布尔值，表示是否允许发送<code>Cookie</code>。默认情况下，<code>Cookie</code>不包括在<code>CORS</code>请求之中。设为<code>true</code>，即表示服务器明确许可，<code>Cookie</code>可以包含在请求中，一起发给服务器。这个值也只能设为<code>true</code>，如果服务器不要浏览器发送<code>Cookie</code>，删除该字段即可。</p>
+<h5 id="（3）Access-Control-Expose-Headers"><a href="#（3）Access-Control-Expose-Headers" class="headerlink" title="（3）Access-Control-Expose-Headers"></a>（3）Access-Control-Expose-Headers</h5><p>该字段可选。<code>CORS</code>请求时，<code>XMLHttpRequest</code>对象的<code>getResponseHeader()</code>方法只能拿到6个基本字段：<code>Cache-Control</code>、<code>Content-Language</code>、<code>Content-Type</code>、<code>Expires</code>、<code>Last-Modified</code>、<code>Pragma</code>。如果想拿到其他字段，就必须在<code>Access-Control-Expose-Headers</code>里面指定。上面的例子指定，<code>getResponseHeader(&#39;FooBar&#39;)</code>可以返回<code>FooBar</code>字段的值。</p>
+<h4 id="3-2-withCredentials-属性"><a href="#3-2-withCredentials-属性" class="headerlink" title="3.2 withCredentials 属性"></a>3.2 withCredentials 属性</h4><p>上面说到，<code>CORS</code>请求默认不发送<code>Cookie</code>和<code>HTTP</code>认证信息。如果要把<code>Cookie</code>发到服务器，一方面要服务器同意，指定<code>Access-Control-Allow-Credentials</code>字段。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Access-Control-Allow-Credentials: true</div></pre></td></tr></table></figure></p>
+<p>另一方面，开发者必须在<code>AJAX</code>请求中打开<code>withCredentials</code>属性。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">var xhr = new XMLHttpRequest();</div><div class="line">xhr.withCredentials = true;</div></pre></td></tr></table></figure></p>
+<p>否则，即使服务器同意发送<code>Cookie</code>，浏览器也不会发送。或者，服务器要求设置<code>Cookie</code>，浏览器也不会处理。</p>
+<p>但是，如果省略<code>withCredentials</code>设置，有的浏览器还是会一起发送<code>Cookie</code>。这时，可以显式关闭<code>withCredentials</code>。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">xhr.withCredentials = false;</div></pre></td></tr></table></figure></p>
+<p>需要注意的是，如果要发送<code>Cookie</code>，<code>Access-Control-Allow-Origin</code>就不能设为星号，必须指定明确的、与请求网页一致的域名。同时，<code>Cookie</code>依然遵循同源政策，只有用服务器域名设置的<code>Cookie</code>才会上传，其他域名的<code>Cookie</code>并不会上传，且（跨源）原网页代码中的<code>document.cookie</code>也无法读取服务器域名下的<code>Cookie</code>。</p>
+<h3 id="四、非简单请求"><a href="#四、非简单请求" class="headerlink" title="四、非简单请求"></a>四、非简单请求</h3><h4 id="4-1-预检请求"><a href="#4-1-预检请求" class="headerlink" title="4.1 预检请求"></a>4.1 预检请求</h4><p>非简单请求是那种对服务器有特殊要求的请求，比如请求方法是<code>PUT</code>或<code>DELETE</code>，或者<code>Content-Type</code>字段的类型是<code>application/json</code>。</p>
+<p>非简单请求的<code>CORS</code>请求，会在正式通信之前，增加一次<code>HTTP</code>查询请求，称为”预检”请求（<code>preflight</code>）。</p>
+<p>浏览器先询问服务器，当前网页所在的域名是否在服务器的许可名单之中，以及可以使用哪些<code>HTTP</code>动词和头信息字段。只有得到肯定答复，浏览器才会发出正式的<code>XMLHttpRequest</code>请求，否则就报错。</p>
+<p>下面是一段浏览器的<code>JavaScript</code>脚本。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> url = <span class="string">'http://api.alice.com/cors'</span>;</div><div class="line"><span class="keyword">var</span> xhr = <span class="keyword">new</span> XMLHttpRequest();</div><div class="line">xhr.open(<span class="string">'PUT'</span>, url, <span class="literal">true</span>);</div><div class="line">xhr.setRequestHeader(<span class="string">'X-Custom-Header'</span>, <span class="string">'value'</span>);</div><div class="line">xhr.send();</div></pre></td></tr></table></figure></p>
+<p>上面代码中，<code>HTTP</code>请求的方法是<code>PUT</code>，并且发送一个自定义头信息<code>X-Custom-Header</code>。</p>
+<p>浏览器发现，这是一个非简单请求，就自动发出一个”预检”请求，要求服务器确认可以这样请求。下面是这个”预检”请求的<code>HTTP</code>头信息。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">OPTIONS /cors HTTP/1.1</div><div class="line">Origin: http://api.bob.com</div><div class="line">Access-Control-Request-Method: PUT</div><div class="line">Access-Control-Request-Headers: X-Custom-Header</div><div class="line">Host: api.alice.com</div><div class="line">Accept-Language: en-US</div><div class="line">Connection: keep-alive</div><div class="line">User-Agent: Mozilla/5.0...</div></pre></td></tr></table></figure></p>
+<p>“预检”请求用的请求方法是<code>OPTIONS</code>，表示这个请求是用来询问的。头信息里面，关键字段是<code>Origin</code>，表示请求来自哪个源。</p>
+<p>除了<code>Origin</code>字段，”预检”请求的头信息包括两个特殊字段。</p>
+<h5 id="（1）Access-Control-Request-Method"><a href="#（1）Access-Control-Request-Method" class="headerlink" title="（1）Access-Control-Request-Method"></a>（1）Access-Control-Request-Method</h5><p>该字段是必须的，用来列出浏览器的<code>CORS</code>请求会用到哪些<code>HTTP</code>方法，上例是<code>PUT</code>。</p>
+<h5 id="（2）Access-Control-Request-Headers"><a href="#（2）Access-Control-Request-Headers" class="headerlink" title="（2）Access-Control-Request-Headers"></a>（2）Access-Control-Request-Headers</h5><p>该字段是一个逗号分隔的字符串，指定浏览器<code>CORS</code>请求会额外发送的头信息字段，上例是<code>X-Custom-Header</code>。</p>
+<h4 id="4-2-预检请求的回应"><a href="#4-2-预检请求的回应" class="headerlink" title="4.2 预检请求的回应"></a>4.2 预检请求的回应</h4><p>服务器收到”预检”请求以后，检查了<code>Origin</code>、<code>Access-Control-Request-Method</code>和<code>Access-Control-Request-Headers</code>字段以后，确认允许跨源请求，就可以做出回应。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">HTTP/1.1 200 OK</div><div class="line">Date: Mon, 01 Dec 2008 01:15:39 GMT</div><div class="line">Server: Apache/2.0.61 (Unix)</div><div class="line">Access-Control-Allow-Origin: http://api.bob.com</div><div class="line">Access-Control-Allow-Methods: GET, POST, PUT</div><div class="line">Access-Control-Allow-Headers: X-Custom-Header</div><div class="line">Content-Type: text/html; charset=utf-8</div><div class="line">Content-Encoding: gzip</div><div class="line">Content-Length: 0</div><div class="line">Keep-Alive: timeout=2, max=100</div><div class="line">Connection: Keep-Alive</div><div class="line">Content-Type: text/plain</div></pre></td></tr></table></figure></p>
+<p>上面的HTTP回应中，关键的是<code>Access-Control-Allow-Origin</code>字段，表示<code>http://api.bob.com</code>可以请求数据。该字段也可以设为星号，表示同意任意跨源请求。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Access-Control-Allow-Origin: *</div></pre></td></tr></table></figure></p>
+<p>如果浏览器否定了”预检”请求，会返回一个正常的<code>HTTP</code>回应，但是没有任何<code>CORS</code>相关的头信息字段。这时，浏览器就会认定，服务器不同意预检请求，因此触发一个错误，被<code>XMLHttpRequest</code>对象的<code>onerror</code>回调函数捕获。控制台会打印出如下的报错信息。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">XMLHttpRequest cannot load http://api.alice.com.</div><div class="line">Origin http://api.bob.com is not allowed by Access-Control-Allow-Origin.</div></pre></td></tr></table></figure></p>
+<p>服务器回应的其他<code>CORS</code>相关字段如下。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Access-Control-Allow-Methods: GET, POST, PUT</div><div class="line">Access-Control-Allow-Headers: X-Custom-Header</div><div class="line">Access-Control-Allow-Credentials: true</div><div class="line">Access-Control-Max-Age: 1728000</div></pre></td></tr></table></figure></p>
+<h5 id="（1）Access-Control-Allow-Methods"><a href="#（1）Access-Control-Allow-Methods" class="headerlink" title="（1）Access-Control-Allow-Methods"></a>（1）Access-Control-Allow-Methods</h5><p>该字段必需，它的值是逗号分隔的一个字符串，表明服务器支持的所有跨域请求的方法。注意，返回的是所有支持的方法，而不单是浏览器请求的那个方法。这是为了避免多次”预检”请求。</p>
+<h5 id="（2）Access-Control-Allow-Headers"><a href="#（2）Access-Control-Allow-Headers" class="headerlink" title="（2）Access-Control-Allow-Headers"></a>（2）Access-Control-Allow-Headers</h5><p>如果浏览器请求包括<code>Access-Control-Request-Headers</code>字段，则<code>Access-Control-Allow-Headers</code>字段是必需的。它也是一个逗号分隔的字符串，表明服务器支持的所有头信息字段，不限于浏览器在”预检”中请求的字段。</p>
+<h5 id="（3）Access-Control-Allow-Credentials"><a href="#（3）Access-Control-Allow-Credentials" class="headerlink" title="（3）Access-Control-Allow-Credentials"></a>（3）Access-Control-Allow-Credentials</h5><p>该字段与简单请求时的含义相同。</p>
+<h5 id="（4）Access-Control-Max-Age"><a href="#（4）Access-Control-Max-Age" class="headerlink" title="（4）Access-Control-Max-Age"></a>（4）Access-Control-Max-Age</h5><p>该字段可选，用来指定本次预检请求的有效期，单位为秒。上面结果中，有效期是20天（1728000秒），即允许缓存该条回应1728000秒（即20天），在此期间，不用发出另一条预检请求。</p>
+<h4 id="4-3-浏览器的正常请求和回应"><a href="#4-3-浏览器的正常请求和回应" class="headerlink" title="4.3 浏览器的正常请求和回应"></a>4.3 浏览器的正常请求和回应</h4><p>一旦服务器通过了”预检”请求，以后每次浏览器正常的<code>CORS</code>请求，就都跟简单请求一样，会有一个<code>Origin</code>头信息字段。服务器的回应，也都会有一个<code>Access-Control-Allow-Origin</code>头信息字段。</p>
+<p>下面是”预检”请求之后，浏览器的正常<code>CORS</code>请求。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">PUT /cors HTTP/1.1</div><div class="line">Origin: http://api.bob.com</div><div class="line">Host: api.alice.com</div><div class="line">X-Custom-Header: value</div><div class="line">Accept-Language: en-US</div><div class="line">Connection: keep-alive</div><div class="line">User-Agent: Mozilla/5.0...</div></pre></td></tr></table></figure></p>
+<p>上面头信息的<code>Origin</code>字段是浏览器自动添加的。</p>
+<p>下面是服务器正常的回应。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Access-Control-Allow-Origin: http://api.bob.com</div><div class="line">Content-Type: text/html; charset=utf-8</div></pre></td></tr></table></figure></p>
+<p>上面头信息中，<code>Access-Control-Allow-Origin</code>字段是每次回应都必定包含的。</p>
+<h3 id="五、与JSONP的比较"><a href="#五、与JSONP的比较" class="headerlink" title="五、与JSONP的比较"></a>五、与JSONP的比较</h3><p><code>CORS</code>与<code>JSONP</code>的使用目的相同，但是比<code>JSONP</code>更强大。</p>
+<p><code>JSONP只支持GET请求</code>，<code>CORS</code>支持所有类型的<code>HTTP</code>请求。<code>JSONP的优势在于支持老式浏览器，以及可以向不支持CORS的网站请求数据</code>。</p>
+<blockquote>
+<p>作者： 阮一峰<br><br>原文链接：<a href="http://www.ruanyifeng.com/blog/2016/04/cors.html" target="_blank" rel="external">http://www.ruanyifeng.com/blog/2016/04/cors.html</a></p>
+</blockquote>
+
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+
+</div>
+
+    <a data-url="http://github.com/b2stry/2017/11/21/跨域资源共享CORS详解/" data-id="cjizjt0n8003fuoqej0bfai76" class="article-share-link"><i class="fa fa-share"></i>分享</a>
+<script>
+    (function ($) {
+        // Prevent duplicate binding
+        if (typeof(__SHARE_BUTTON_BINDED__) === 'undefined' || !__SHARE_BUTTON_BINDED__) {
+            __SHARE_BUTTON_BINDED__ = true;
+        } else {
+            return;
+        }
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="fa fa-twitter article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="fa fa-facebook article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="fa fa-pinterest article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="fa fa-google article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+            
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2017/11/22/消息队列之ActiveMQ/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    消息队列之ActiveMQ
+                
+            </div>
+        </a>
+    
+    
+        <a href="/2017/11/21/利用JSONP实现跨域请求/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">利用JSONP实现跨域请求</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+
+</section>
+            
+                
+<aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/9420/04/02/《阿里感悟》如何在三年内成长为一名技术专家？/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/读书/">读书</a></p>
+                            <p class="item-title"><a href="/9420/04/02/《阿里感悟》如何在三年内成长为一名技术专家？/" class="title">【置顶】《阿里感悟》如何在三年内成长为一名技术专家？</a></p>
+                            <p class="item-date"><time datetime="9420-04-02T07:14:07.000Z" itemprop="datePublished">9420-04-02</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/03/21/远程通信的几种选择/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/远程通信/">远程通信</a></p>
+                            <p class="item-title"><a href="/2018/03/21/远程通信的几种选择/" class="title">远程通信的几种选择</a></p>
+                            <p class="item-date"><time datetime="2018-03-21T14:19:26.000Z" itemprop="datePublished">2018-03-21</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/03/17/Tomcat-性能调优/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/tomcat调优/">tomcat调优</a></p>
+                            <p class="item-title"><a href="/2018/03/17/Tomcat-性能调优/" class="title">Tomcat 性能调优</a></p>
+                            <p class="item-date"><time datetime="2018-03-17T14:53:21.000Z" itemprop="datePublished">2018-03-17</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/03/13/Map中的hash/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/hash/">hash</a></p>
+                            <p class="item-title"><a href="/2018/03/13/Map中的hash/" class="title">Map中的hash()</a></p>
+                            <p class="item-date"><time datetime="2018-03-13T11:08:46.000Z" itemprop="datePublished">2018-03-13</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/03/05/springboot集成swagger2，构建优雅的Restful-API/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/swagger/">swagger</a></p>
+                            <p class="item-title"><a href="/2018/03/05/springboot集成swagger2，构建优雅的Restful-API/" class="title">Spring Boot集成Swagger2，构建优雅的Restful API</a></p>
+                            <p class="item-date"><time datetime="2018-03-05T08:20:46.000Z" itemprop="datePublished">2018-03-05</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Ajax/">Ajax</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Elasticsearch/">Elasticsearch</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Js/">Js</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring-Boot/">Spring Boot</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/activemq/">activemq</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/algorithm/">algorithm</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/command/">command</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/docker/">docker</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/fetch/">fetch</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/hash/">hash</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/interview/">interview</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jsr303/">jsr303</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/kafka/">kafka</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/network/">network</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/python/">python</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/rabbitmq/">rabbitmq</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/redis/">redis</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/regex/">regex</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/spring/">spring</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/sql/">sql</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/swagger/">swagger</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/thymeleaf/">thymeleaf</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/tomcat调优/">tomcat调优</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/消息中间件/">消息中间件</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/读书/">读书</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/远程通信/">远程通信</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/集群/">集群</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/集群/分布式/">分布式</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/集群/分布式/云计算/">云计算</a><span class="category-list-count">1</span></li></ul></li></ul></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">归档</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/9420/04/">April 9420</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a><span class="archive-list-count">2</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签</h3>
+        <div class="widget">
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ajax/">Ajax</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Elasticsearch/">Elasticsearch</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JSP/">JSP</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Boot/">Spring Boot</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/fetch/">fetch</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hash/">hash</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jsr303/">jsr303</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/">linux</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/">mysql</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/">redis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring/">spring</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql/">sql</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/swagger/">swagger</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/thymeleaf/">thymeleaf</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat调优/">tomcat调优</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vim/">vim</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/一键评教/">一键评教</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/云计算/">云计算</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/分布式/">分布式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/正则表达式/">正则表达式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/消息中间件/">消息中间件</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/计算机网络/">计算机网络</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/读书/">读书</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/远程通信/">远程通信</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/集群/">集群</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/面试/">面试</a><span class="tag-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签云</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/Ajax/" style="font-size: 13.33px;">Ajax</a> <a href="/tags/Elasticsearch/" style="font-size: 10px;">Elasticsearch</a> <a href="/tags/JSP/" style="font-size: 10px;">JSP</a> <a href="/tags/Java/" style="font-size: 13.33px;">Java</a> <a href="/tags/Python/" style="font-size: 10px;">Python</a> <a href="/tags/Spring-Boot/" style="font-size: 16.67px;">Spring Boot</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/fetch/" style="font-size: 10px;">fetch</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/hash/" style="font-size: 10px;">hash</a> <a href="/tags/java/" style="font-size: 13.33px;">java</a> <a href="/tags/jsr303/" style="font-size: 10px;">jsr303</a> <a href="/tags/linux/" style="font-size: 13.33px;">linux</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/python/" style="font-size: 13.33px;">python</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a> <a href="/tags/shell/" style="font-size: 13.33px;">shell</a> <a href="/tags/spring/" style="font-size: 10px;">spring</a> <a href="/tags/sql/" style="font-size: 10px;">sql</a> <a href="/tags/swagger/" style="font-size: 10px;">swagger</a> <a href="/tags/thymeleaf/" style="font-size: 10px;">thymeleaf</a> <a href="/tags/tomcat/" style="font-size: 10px;">tomcat</a> <a href="/tags/tomcat调优/" style="font-size: 10px;">tomcat调优</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/一键评教/" style="font-size: 10px;">一键评教</a> <a href="/tags/云计算/" style="font-size: 10px;">云计算</a> <a href="/tags/分布式/" style="font-size: 10px;">分布式</a> <a href="/tags/正则表达式/" style="font-size: 10px;">正则表达式</a> <a href="/tags/消息中间件/" style="font-size: 20px;">消息中间件</a> <a href="/tags/算法/" style="font-size: 13.33px;">算法</a> <a href="/tags/计算机网络/" style="font-size: 10px;">计算机网络</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/远程通信/" style="font-size: 10px;">远程通信</a> <a href="/tags/集群/" style="font-size: 10px;">集群</a> <a href="/tags/面试/" style="font-size: 10px;">面试</a>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">友情链接(排名不分先后)</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a target="_blank" href="http://ifeve.com/">并发编程网</a>
+                    </li>
+                
+                    <li>
+                        <a target="_blank" href="http://www.sivan0222.cn">吴晓文</a>
+                    </li>
+                
+                    <li>
+                        <a target="_blank" href="http://www.rxdonny.com">唐仁鑫</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+
+            
+        </div>
+        <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<footer id="footer">
+	
+    <div class="outer">
+    	<a target="_blank" href="https://github.com/b2stry"><span class="fa-stack fa-lg">
+                                <i class="fa fa-github fa-stack-2x fa-inverse" style="color:#898d92"></i></span></a>
+        <div id="footer-info" class="inner">
+            Copyright&nbsp;&copy; 2018 <a href="https://github.com/B2stry" target="_blank">Shallow An</a>  &nbsp;&nbsp;<br><span id="busuanzi_container_site_pv" style="font-size:13px"> 
+  		pv: <span id="busuanzi_value_site_pv" style="font-size:10px"></span>
+	</span><br>&nbsp;&nbsp;いつからか好きになっていました<br>中心藏之，何日忘之<br><br>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="http://github.com/ppoffice" target="_blank">PPOffice</a>
+        </div>
+    </div>
+</footer>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?95a2d1c2cf767a8efae55252dd5e5de4";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+        
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+        <script type="text/x-mathjax-config">
+            MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
+</html>

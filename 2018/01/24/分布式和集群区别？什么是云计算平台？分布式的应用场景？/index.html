@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <meta charset="utf-8">
+    
+    <title>分布式和集群区别？什么是云计算平台？分布式的应用场景？ | 夏浅安のブログ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="分布式是指将一个业务拆分不同的子业务，分布在不同的机器上执行，集群是指多台服务器集中在一起，实现同一业务，可以视为一台计算机，一个云计算平台，就是通过一套软件系统把分布式部署的资源集中调度使用。要应对大并发，要实现高可用，既需要分布式，也离不开集群。">
+<meta name="keywords" content="集群,分布式,云计算">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分布式和集群区别？什么是云计算平台？分布式的应用场景？">
+<meta property="og:url" content="http://github.com/b2stry/2018/01/24/分布式和集群区别？什么是云计算平台？分布式的应用场景？/index.html">
+<meta property="og:site_name" content="夏浅安のブログ">
+<meta property="og:description" content="分布式是指将一个业务拆分不同的子业务，分布在不同的机器上执行，集群是指多台服务器集中在一起，实现同一业务，可以视为一台计算机，一个云计算平台，就是通过一套软件系统把分布式部署的资源集中调度使用。要应对大并发，要实现高可用，既需要分布式，也离不开集群。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://www.ymq.io/images/2018/Distributed/transaction-cluster/1.png">
+<meta property="og:updated_time" content="2018-02-28T08:48:23.864Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="分布式和集群区别？什么是云计算平台？分布式的应用场景？">
+<meta name="twitter:description" content="分布式是指将一个业务拆分不同的子业务，分布在不同的机器上执行，集群是指多台服务器集中在一起，实现同一业务，可以视为一台计算机，一个云计算平台，就是通过一套软件系统把分布式部署的资源集中调度使用。要应对大并发，要实现高可用，既需要分布式，也离不开集群。">
+<meta name="twitter:image" content="http://www.ymq.io/images/2018/Distributed/transaction-cluster/1.png">
+    
+
+    
+
+    
+        <link rel="icon" href="/images/yu.png" />
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+    
+        <script>
+var _hmt = _hmt || [];
+(function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?865692d8325f5ebc46f2007ac5a4f929";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+	
+})();
+</script>
+
+    
+
+
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+               
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/.">Home</a>
+                
+                    <a class="main-nav-link" href="/archives">Archives</a>
+                
+                    <a class="main-nav-link" href="/categories">Categories</a>
+                
+                    <a class="main-nav-link" href="/tags">Tags</a>
+                
+                    <a class="main-nav-link" href="/about">About</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/images/mianbao.png" />
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/.">Home</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">Archives</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">Categories</a></td>
+                
+                    <td><a class="main-nav-link" href="/tags">Tags</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">About</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/images/mianbao.png" />
+            <h2 id="name">ShallowAn</h2>
+            <h3 id="title">世界远比你想象的更精彩,<br>别放弃!</h3>
+            <span id="location"><i class="fa fa-map-marker"></i>中国, 长沙</span>
+            <a style="margin:20px 50px 10px" id="follow" target="_blank" href="https://github.com/b2stry/">关注</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                42
+                <span>文章</span>
+            </div>
+            <div class="article-info-block">
+                35
+                <span>标签</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="http://main.shallowan.cn" target="_blank" title="home" class=tooltip>
+                            <i class="fa fa-home"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="http://47.93.242.254:8888/mytwitter/" target="_blank" title="twitter" class=tooltip>
+                            <i class="fa fa-twitter"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://weibo.com/shallowAn" target="_blank" title="weibo" class=tooltip>
+                            <i class="fa fa-weibo"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://www.linkedin.com/in/%E9%9C%88-%E5%88%98-250b7b152/" target="_blank" title="linkedin" class=tooltip>
+                            <i class="fa fa-linkedin"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="javascript:window.open('http://www.shallowan.cn/imgrepo/wechatcode.png')" target="_blank" title="weixin" class=tooltip>
+                            <i class="fa fa-weixin"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://github.com/b2stry/" target="_blank" title="github" class=tooltip>
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+</aside>
+
+            
+            <section id="main"><article id="post-分布式和集群区别？什么是云计算平台？分布式的应用场景？" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+            分布式和集群区别？什么是云计算平台？分布式的应用场景？
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/2018/01/24/分布式和集群区别？什么是云计算平台？分布式的应用场景？/">
+            <time datetime="2018-01-24T15:23:56.000Z" itemprop="datePublished">2018-01-24</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/集群/">集群</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/集群/分布式/">分布式</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/集群/分布式/云计算/">云计算</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/云计算/">云计算</a>, <a class="tag-link" href="/tags/分布式/">分布式</a>, <a class="tag-link" href="/tags/集群/">集群</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <p>分布式是指将一个业务拆分不同的子业务，分布在不同的机器上执行，集群是指多台服务器集中在一起，实现同一业务，可以视为一台计算机，一个云计算平台，就是通过一套软件系统把分布式部署的资源集中调度使用。要应对大并发，要实现高可用，既需要分布式，也离不开集群。<br><a id="more"></a></p>
+<h1 id="分布式和集群区别？"><a href="#分布式和集群区别？" class="headerlink" title="分布式和集群区别？"></a>分布式和集群区别？</h1><h3 id="分布式"><a href="#分布式" class="headerlink" title="分布式"></a>分布式</h3><p><strong>分布式</strong>：是指将一个业务拆分不同的子业务，分布在不同的机器上执行。</p>
+<p>常用的分布式就是在负载均衡服务器后加一堆web服务器，然后在上面搞一个缓存服务器来保存临时状态，后面共享一个数据库。</p>
+<p>如图所示:<br><img src="http://www.ymq.io/images/2018/Distributed/transaction-cluster/1.png" alt=""><br>这种环境下真正进行分布式的只是web server而已，并且web server之间没有任何联系，所以结构和实现都非常简单。</p>
+<h3 id="集群"><a href="#集群" class="headerlink" title="集群"></a>集群</h3><p><strong>集群</strong>：是指多台服务器集中在一起，实现同一业务，可以视为一台计算机。</p>
+<p>多台服务器组成的一组计算机，作为一个整体存在，向用户提供一组网络资源，这些单个的服务器就是集群的节点。</p>
+<h3 id="两个特点"><a href="#两个特点" class="headerlink" title="两个特点"></a>两个特点</h3><p><strong>可扩展性</strong>：集群中的服务节点，可以动态的添加机器，从而增加集群的处理能力。</p>
+<p><strong>高可用性</strong>：如果集群某个节点发生故障，这台节点上面运行的服务，可以被其他服务节点接管，从而增强集群的高可用性。</p>
+<h3 id="集群分类"><a href="#集群分类" class="headerlink" title="集群分类"></a>集群分类</h3><p>常用的集群分类</p>
+<p><strong>1.高可用集群</strong>(High Availability Cluster)</p>
+<p>高可用集群,普通两节点双机热备，多节点HA集群。</p>
+<p><strong>2.负载均衡集群</strong>(Load Balance Cluster)</p>
+<p>常用的有 Nginx 把请求分发给后端的不同web服务器，还有就是数据库集群，负载均衡就是，为了保证服务器的高可用，高并发。</p>
+<p><strong>3.科学计算集群</strong>(High Performance Computing Cluster)</p>
+<p>简称HPC集群。这类集群致力于提供单个计算机所不能提供的强大的计算能力。</p>
+<h3 id="两大能力"><a href="#两大能力" class="headerlink" title="两大能力"></a>两大能力</h3><p><strong>负载均衡</strong>：负载均衡能把任务比较均衡地分布到集群环境下的计算和网络资源。</p>
+<p><strong>集群容错</strong>：当我们的系统中用到集群环境,因为各种原因在集群调用失败时，集群容错起到关键性的作用。</p>
+<p>例如 Dubbo 的集群容错：</p>
+<p><strong>Failover Cluster</strong></p>
+<p>失败自动切换，当出现失败，重试其它服务器，通常用于读操作，但重试会带来更长延迟。</p>
+<p><strong>Failfast Cluster</strong></p>
+<p>快速失败，只发起一次调用，失败立即报错，通常用于非幂等性的写操作，比如新增记录。</p>
+<p><strong>Failback Cluster</strong></p>
+<p>失败自动恢复，后台记录失败请求，定时重发，通常用于消息通知操作。</p>
+<p><strong>Forking Cluster</strong></p>
+<p>并行调用多个服务器，只要一个成功即返回，通常用于实时性要求较高的读操作，但需要浪费更多服务资源。</p>
+<h3 id="简单总结"><a href="#简单总结" class="headerlink" title="简单总结"></a>简单总结</h3><p>分布式，从狭义上理解，也与集群差不多，但是它的组织比较松散，不像集群，有一定组织性，一台服务器宕了，其他的服务器可以顶上来。</p>
+<p>分布式的每一个节点，都完成不同的业务，一个节点宕了，这个业务就不可访问了。</p>
+<p><strong>1. 分布式是指将一个业务拆分不同的子业务，分布在不同的机器上执行。</strong></p>
+<p><strong>2. 集群是指多台服务器集中在一起，实现同一业务，可以视为一台计算机。</strong></p>
+<p>分布式的每一个节点，都可以用来做集群。而集群不一定就是分布式了。</p>
+<h1 id="什么是云计算平台？"><a href="#什么是云计算平台？" class="headerlink" title="什么是云计算平台？"></a>什么是云计算平台？</h1><p>一个云计算平台，就是通过一套软件系统把分布式部署的资源集中调度使用。要应对大并发，要实现高可用，既需要分布式，也离不开集群。</p>
+<p>比如负载均衡，如果只是一台服务器，这台宕机了就完蛋了。</p>
+<p>分布式的难点，就是很多机器做存在依赖关系的不同活儿，这些活儿需要的资源、时间区别可能很大，某些机器还可能罢工，要怎么样才能协调好，做到效率最高，消耗最少，不出错。</p>
+<h1 id="分布式的应用场景？"><a href="#分布式的应用场景？" class="headerlink" title="分布式的应用场景？"></a>分布式的应用场景？</h1><p>平时接触到的分布式系统有很多种，比如分布式文件系统，分布式数据库，分布式WebService，分布式计算等等，面向的情景不同，但分布式的思路是否是一样的呢?</p>
+<h3 id="1-简单的例子"><a href="#1-简单的例子" class="headerlink" title="1.简单的例子"></a>1.简单的例子</h3><p>假设我们有一台服务器，它可以承担1百万/秒的请求，这个请求可以的是通过http访问网页，通过tcp下载文件，jdbc执行sql，RPC调用接口…，现在我们有一条数据的请求是2百万/秒，很显然服务器hold不住了，会各种拒绝访问，甚至崩溃，宕机，怎么办呢。</p>
+<p>一台机器解决不了的问题，那就两台。所以我们加一台机器，每台承担1百万。如果请求继续增加呢，两台解决不了的问题，那就三台呗。</p>
+<p>这种方式我们称之为<strong>水平扩展</strong>。如何实现请求的平均分配便是<strong>负载均衡</strong>了。</p>
+<p>另一个栗子，我们现在有两个数据请求，数据1 90万，数据2 80万，上面那台机器也hold不住，我们加一台机器来负载均衡一下，每台机器处理45万数据1和40万数据2，但是平分太麻烦，不如一台处理数据1，一台处理数据2，同样能解决问题，这种方式我们称之为<strong>垂直拆分</strong>。</p>
+<p><strong>水平扩展和垂直拆分</strong>是分布式架构的两种思路，但并不是一个二选一的问题，更多的是兼并合用。下面介绍一个实际的场景。这也是许多互联网的公司架构思路。</p>
+<h3 id="2-实际的例子"><a href="#2-实际的例子" class="headerlink" title="2.实际的例子"></a>2.实际的例子</h3><p>我此时所在的公司的计算机系统很庞大，自然是一个整的分布式系统，为了方便组织管理，公司将整个技术部按业务和平台拆分为部门，订单的，会员的，商家的等等，每个部门有自己的web服务器集群，数据库服务器集群，通过同一个网站访问的链接可能来自于不同的服务器和数据库，对网站及底层对数据库的访问被分配到了不同的服务器集群,这个便是典型的按业务做的<strong>垂直拆分</strong>，每个部门的服务器在hold不住时，会有弹性的扩展，这便是<strong>水平扩展</strong>。</p>
+<p>在数据库层，有些表非常大，数据量在亿级，如果只是纯粹的水平的扩展并不一定最好，如果对表进行拆分，比如可以按用户id进行水平拆表，通过对id取模的方式，将用户划分到多张表中，同时这些表也可以处在不同的服务器。按业务的垂直拆库和按用户<strong>水平拆表</strong>是分布式数据库中通用的解决方案。</p>
+<p>比如 Mycat 开源分布式数据库中间件 <a href="http://www.mycat.io/" target="_blank" rel="external">http://www.mycat.io/</a></p>
+<h3 id="3-分布式一致性"><a href="#3-分布式一致性" class="headerlink" title="3.分布式一致性"></a>3.分布式一致性</h3><p>分布式系统中，解决了负载均衡的问题后，另外一个问题就是数据的一致性了，这个就需要通过同步来保障。根据不同的场景和需求，同步的方式也是有选择的。</p>
+<p>在分布式文件系统中，比如商品页面的图片，如果进行了修改，同步要求并不高，就算有数秒甚至数分钟的延迟都是可以接受的，因为一般不会产生损失性的影响，因此可以简单的通过文件修改的时间戳，隔一定时间扫描同步一次，可以牺牲一致性来提高效率。</p>
+<p>但银行中的分布式数据库就不一样了，一丁点不同步就是无法接受的，甚至可以通过加锁等牺牲性能的方式来保障完全的一致。</p>
+<p>在一致性算法中paxos算法是公认的最好的算法，Chubby、ZooKeeper 中Paxos是它保证一致性的核心。这个算法比较难懂，我目前也没弄懂，这里就不深入了。</p>
+<blockquote>
+<p>作者：鹏磊<br><br>出处：<a href="http://www.ymq.io/2018/01/23/Distributed-cluster/" target="_blank" rel="external">http://www.ymq.io/2018/01/23/Distributed-cluster/</a></p>
+</blockquote>
+
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+
+</div>
+
+    <a data-url="http://github.com/b2stry/2018/01/24/分布式和集群区别？什么是云计算平台？分布式的应用场景？/" data-id="cjizjt0k60025uoqeyylc3v6i" class="article-share-link"><i class="fa fa-share"></i>分享</a>
+<script>
+    (function ($) {
+        // Prevent duplicate binding
+        if (typeof(__SHARE_BUTTON_BINDED__) === 'undefined' || !__SHARE_BUTTON_BINDED__) {
+            __SHARE_BUTTON_BINDED__ = true;
+        } else {
+            return;
+        }
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="fa fa-twitter article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="fa fa-facebook article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="fa fa-pinterest article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="fa fa-google article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+            
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2018/01/30/Redis基础/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    Redis基础
+                
+            </div>
+        </a>
+    
+    
+        <a href="/2018/01/24/全文搜索引擎-Elasticsearch-入门教程/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">搜索引擎之Elasticsearch</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+
+</section>
+            
+                
+<aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/9420/04/02/《阿里感悟》如何在三年内成长为一名技术专家？/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/读书/">读书</a></p>
+                            <p class="item-title"><a href="/9420/04/02/《阿里感悟》如何在三年内成长为一名技术专家？/" class="title">【置顶】《阿里感悟》如何在三年内成长为一名技术专家？</a></p>
+                            <p class="item-date"><time datetime="9420-04-02T07:14:07.000Z" itemprop="datePublished">9420-04-02</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/03/21/远程通信的几种选择/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/远程通信/">远程通信</a></p>
+                            <p class="item-title"><a href="/2018/03/21/远程通信的几种选择/" class="title">远程通信的几种选择</a></p>
+                            <p class="item-date"><time datetime="2018-03-21T14:19:26.000Z" itemprop="datePublished">2018-03-21</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/03/17/Tomcat-性能调优/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/tomcat调优/">tomcat调优</a></p>
+                            <p class="item-title"><a href="/2018/03/17/Tomcat-性能调优/" class="title">Tomcat 性能调优</a></p>
+                            <p class="item-date"><time datetime="2018-03-17T14:53:21.000Z" itemprop="datePublished">2018-03-17</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/03/13/Map中的hash/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/hash/">hash</a></p>
+                            <p class="item-title"><a href="/2018/03/13/Map中的hash/" class="title">Map中的hash()</a></p>
+                            <p class="item-date"><time datetime="2018-03-13T11:08:46.000Z" itemprop="datePublished">2018-03-13</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/03/05/springboot集成swagger2，构建优雅的Restful-API/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/swagger/">swagger</a></p>
+                            <p class="item-title"><a href="/2018/03/05/springboot集成swagger2，构建优雅的Restful-API/" class="title">Spring Boot集成Swagger2，构建优雅的Restful API</a></p>
+                            <p class="item-date"><time datetime="2018-03-05T08:20:46.000Z" itemprop="datePublished">2018-03-05</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Ajax/">Ajax</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Elasticsearch/">Elasticsearch</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Js/">Js</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring-Boot/">Spring Boot</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/activemq/">activemq</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/algorithm/">algorithm</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/command/">command</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/docker/">docker</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/fetch/">fetch</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/hash/">hash</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/interview/">interview</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jsr303/">jsr303</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/kafka/">kafka</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/network/">network</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/python/">python</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/rabbitmq/">rabbitmq</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/redis/">redis</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/regex/">regex</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/spring/">spring</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/sql/">sql</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/swagger/">swagger</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/thymeleaf/">thymeleaf</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/tomcat调优/">tomcat调优</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/消息中间件/">消息中间件</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/读书/">读书</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/远程通信/">远程通信</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/集群/">集群</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/集群/分布式/">分布式</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/集群/分布式/云计算/">云计算</a><span class="category-list-count">1</span></li></ul></li></ul></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">归档</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/9420/04/">April 9420</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a><span class="archive-list-count">2</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签</h3>
+        <div class="widget">
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ajax/">Ajax</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Elasticsearch/">Elasticsearch</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JSP/">JSP</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Boot/">Spring Boot</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/fetch/">fetch</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hash/">hash</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jsr303/">jsr303</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/">linux</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/">mysql</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/">redis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring/">spring</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql/">sql</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/swagger/">swagger</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/thymeleaf/">thymeleaf</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat调优/">tomcat调优</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vim/">vim</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/一键评教/">一键评教</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/云计算/">云计算</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/分布式/">分布式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/正则表达式/">正则表达式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/消息中间件/">消息中间件</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/计算机网络/">计算机网络</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/读书/">读书</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/远程通信/">远程通信</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/集群/">集群</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/面试/">面试</a><span class="tag-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签云</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/Ajax/" style="font-size: 13.33px;">Ajax</a> <a href="/tags/Elasticsearch/" style="font-size: 10px;">Elasticsearch</a> <a href="/tags/JSP/" style="font-size: 10px;">JSP</a> <a href="/tags/Java/" style="font-size: 13.33px;">Java</a> <a href="/tags/Python/" style="font-size: 10px;">Python</a> <a href="/tags/Spring-Boot/" style="font-size: 16.67px;">Spring Boot</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/fetch/" style="font-size: 10px;">fetch</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/hash/" style="font-size: 10px;">hash</a> <a href="/tags/java/" style="font-size: 13.33px;">java</a> <a href="/tags/jsr303/" style="font-size: 10px;">jsr303</a> <a href="/tags/linux/" style="font-size: 13.33px;">linux</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/python/" style="font-size: 13.33px;">python</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a> <a href="/tags/shell/" style="font-size: 13.33px;">shell</a> <a href="/tags/spring/" style="font-size: 10px;">spring</a> <a href="/tags/sql/" style="font-size: 10px;">sql</a> <a href="/tags/swagger/" style="font-size: 10px;">swagger</a> <a href="/tags/thymeleaf/" style="font-size: 10px;">thymeleaf</a> <a href="/tags/tomcat/" style="font-size: 10px;">tomcat</a> <a href="/tags/tomcat调优/" style="font-size: 10px;">tomcat调优</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/一键评教/" style="font-size: 10px;">一键评教</a> <a href="/tags/云计算/" style="font-size: 10px;">云计算</a> <a href="/tags/分布式/" style="font-size: 10px;">分布式</a> <a href="/tags/正则表达式/" style="font-size: 10px;">正则表达式</a> <a href="/tags/消息中间件/" style="font-size: 20px;">消息中间件</a> <a href="/tags/算法/" style="font-size: 13.33px;">算法</a> <a href="/tags/计算机网络/" style="font-size: 10px;">计算机网络</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/远程通信/" style="font-size: 10px;">远程通信</a> <a href="/tags/集群/" style="font-size: 10px;">集群</a> <a href="/tags/面试/" style="font-size: 10px;">面试</a>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">友情链接(排名不分先后)</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a target="_blank" href="http://ifeve.com/">并发编程网</a>
+                    </li>
+                
+                    <li>
+                        <a target="_blank" href="http://www.sivan0222.cn">吴晓文</a>
+                    </li>
+                
+                    <li>
+                        <a target="_blank" href="http://www.rxdonny.com">唐仁鑫</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+
+            
+        </div>
+        <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<footer id="footer">
+	
+    <div class="outer">
+    	<a target="_blank" href="https://github.com/b2stry"><span class="fa-stack fa-lg">
+                                <i class="fa fa-github fa-stack-2x fa-inverse" style="color:#898d92"></i></span></a>
+        <div id="footer-info" class="inner">
+            Copyright&nbsp;&copy; 2018 <a href="https://github.com/B2stry" target="_blank">Shallow An</a>  &nbsp;&nbsp;<br><span id="busuanzi_container_site_pv" style="font-size:13px"> 
+  		pv: <span id="busuanzi_value_site_pv" style="font-size:10px"></span>
+	</span><br>&nbsp;&nbsp;いつからか好きになっていました<br>中心藏之，何日忘之<br><br>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="http://github.com/ppoffice" target="_blank">PPOffice</a>
+        </div>
+    </div>
+</footer>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?95a2d1c2cf767a8efae55252dd5e5de4";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+        
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+        <script type="text/x-mathjax-config">
+            MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
+</html>

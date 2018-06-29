@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <meta charset="utf-8">
+    
+    <title>微信公众号支付开发全过程--Java | 夏浅安のブログ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="Java集成微信支付指南。  转载自：http://www.cnblogs.com/yimiyan/p/5603657.html">
+<meta name="keywords" content="java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="微信公众号支付开发全过程--Java">
+<meta property="og:url" content="http://github.com/b2stry/2017/10/30/【转载】微信公众号支付开发全过程-Java/index.html">
+<meta property="og:site_name" content="夏浅安のブログ">
+<meta property="og:description" content="Java集成微信支付指南。  转载自：http://www.cnblogs.com/yimiyan/p/5603657.html">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://raw.githubusercontent.com/b2stry/imgrepo/master/java.jpg">
+<meta property="og:updated_time" content="2018-02-03T07:32:55.980Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="微信公众号支付开发全过程--Java">
+<meta name="twitter:description" content="Java集成微信支付指南。  转载自：http://www.cnblogs.com/yimiyan/p/5603657.html">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/b2stry/imgrepo/master/java.jpg">
+    
+
+    
+
+    
+        <link rel="icon" href="/images/yu.png" />
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+    
+        <script>
+var _hmt = _hmt || [];
+(function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?865692d8325f5ebc46f2007ac5a4f929";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+	
+})();
+</script>
+
+    
+
+
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+               
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/.">Home</a>
+                
+                    <a class="main-nav-link" href="/archives">Archives</a>
+                
+                    <a class="main-nav-link" href="/categories">Categories</a>
+                
+                    <a class="main-nav-link" href="/tags">Tags</a>
+                
+                    <a class="main-nav-link" href="/about">About</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/images/mianbao.png" />
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/.">Home</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">Archives</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">Categories</a></td>
+                
+                    <td><a class="main-nav-link" href="/tags">Tags</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">About</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/images/mianbao.png" />
+            <h2 id="name">ShallowAn</h2>
+            <h3 id="title">世界远比你想象的更精彩,<br>别放弃!</h3>
+            <span id="location"><i class="fa fa-map-marker"></i>中国, 长沙</span>
+            <a style="margin:20px 50px 10px" id="follow" target="_blank" href="https://github.com/b2stry/">关注</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                42
+                <span>文章</span>
+            </div>
+            <div class="article-info-block">
+                35
+                <span>标签</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="http://main.shallowan.cn" target="_blank" title="home" class=tooltip>
+                            <i class="fa fa-home"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="http://47.93.242.254:8888/mytwitter/" target="_blank" title="twitter" class=tooltip>
+                            <i class="fa fa-twitter"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://weibo.com/shallowAn" target="_blank" title="weibo" class=tooltip>
+                            <i class="fa fa-weibo"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://www.linkedin.com/in/%E9%9C%88-%E5%88%98-250b7b152/" target="_blank" title="linkedin" class=tooltip>
+                            <i class="fa fa-linkedin"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="javascript:window.open('http://www.shallowan.cn/imgrepo/wechatcode.png')" target="_blank" title="weixin" class=tooltip>
+                            <i class="fa fa-weixin"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://github.com/b2stry/" target="_blank" title="github" class=tooltip>
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+</aside>
+
+            
+            <section id="main"><article id="post-【转载】微信公众号支付开发全过程-Java" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+            
+	
+		<img src="https://raw.githubusercontent.com/b2stry/imgrepo/master/java.jpg" class="article-banner" />
+	
+
+
+
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+            微信公众号支付开发全过程--Java
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/2017/10/30/【转载】微信公众号支付开发全过程-Java/">
+            <time datetime="2017-10-30T14:04:37.000Z" itemprop="datePublished">2017-10-30</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/Java/">Java</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/java/">java</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <p>Java集成微信支付指南。</p>
+<blockquote>
+<p>转载自：<a href="http://www.cnblogs.com/yimiyan/p/5603657.html" target="_blank" rel="external">http://www.cnblogs.com/yimiyan/p/5603657.html</a><br><a id="more"></a><br>业务流程</p>
+</blockquote>
+<p>这个微信官网说的还是很详细的，还配了图。我还要再说一遍。</p>
+<p>用户点击一个支付按钮–&gt;{后台一大推处理}–&gt;用户看到了一个输入密码的界面，包含金额等一些信息–&gt;用户输入密码后出来一个支付成功的页面（这部分流程都是微信自己完成的，我们什么都不用做）–&gt;返回系统自己的页面（总不能让用户一直看着一个支付完成的页面吧。花了钱，正心疼的，赶紧跳转啊~一会后悔了，申请退款怎么整。可怜的工程师还得开发退款功能）</p>
+<p>开发流程</p>
+<p>1）获取用户授权(这个做不做没有啥关系，反正我还没做呢)<br>2）调用统一下单接口获取预支付id<br>3）H5调起微信支付的内置JS<br>4）支付完成后，微信回调URL的处理</p>
+<p>看着大段的文字，是不是很不爽。忘记了在哪里看到的一句话。One picture instead  thousands of words.</p>
+<p><img src="http://images2015.cnblogs.com/blog/456549/201606/456549-20160621152118037-885582567.png" alt=""></p>
+<p>本文最主要的部分开始了(想直接看代码，贴上代码，你也不一定能看懂，不是说代码难，各种分离，各种类，不直接。看懂了，不一定能调试通。最后一个签名错误，或者$get_brand_wcpay_request:fail.$key0 还是得回来乖乖的对参数。)最近学习英语有点魔怔了。各种插入语。不懂什么梗的，可略过。朋友一直说我的笑点和别人不一样。文后会讲个笑话。<br>1、生成统一下单接口，获取prepay_id.<br>需要的参数 ==名称==从哪里找到他们：<br>微信官方给了个参数的详细说明。<a href="https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_1" target="_blank" rel="external">https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_1</a> 部分参数，仍然不知道哪里找的小伙伴们请继续向下看<br>appid ==应用ID==登陆微信公众号后台-开发-基本配置<br>mch_id == 微信支付商户号==登陆微信支付后台，即可看到<br>device_info==设备号==终端设备号(门店号或收银设备ID)，注意：PC网页或公众号内支付请传”WEB”<br>body==商品描述==商品或支付单简要描述（不知道是什么鬼，没关系，先随便传个字符串，随便的传个英文的字符串。你会为你这个时候的英明决定打个满分。如果是中文，可能会遇到毫无头绪的签名错误，严重者开始怀疑人生）<br>trade_type==交易类型==取值如下：JSAPI，NATIVE，APP。我们这里使用的JSAPI。标题已经说了，是微信公众号支付。他们的区别，请参考<a href="https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_2" target="_blank" rel="external">https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_2</a><br>　　　　　　ps：JSAPI–公众号支付、NATIVE–原生扫码支付、APP–app支付，统一下单接口trade_type的传参可参考这里。MICROPAY–刷卡支付，刷卡支付有单独的支付接口，不调用统一下单接口<br>nonce_str==随机字符串==随机字符串，不长于32位（参考算法<a href="https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_3）" target="_blank" rel="external">https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_3）</a><br>　　　　　  ps:小伙伴们可能会对nonce这个命名，很诧异，微信team的人，都是逗必吗~。查了一下百科，随机数也用nonce表示。瞬间伤害满满的。（好奇的宝宝可用剑桥词典查一下nonce的意思）。在我的不懈努力下，<br>　　　　　　发现了这个。nonce ==number used once.恍然大悟的赶脚。</p>
+<p>notify_url==通知地址==接收微信支付异步通知回调地址，通知url必须为直接可访问的url，不能携带参数。（这，起个什么名字好呢。随便起吧，反正一时半会也用不到）<br>out_trade_no==商户订单号==商户系统内部的订单号,32个字符内、可包含字母（参考：<a href="https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_2）（每次看完微信的官方解释就更迷茫了，有木有。没关系，我就传个1咋了。）" target="_blank" rel="external">https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_2）（每次看完微信的官方解释就更迷茫了，有木有。没关系，我就传个1咋了。）</a><br>total_fee==总金额==订单总金额，单位为分（为了公司的项目测试，还得自己掏银子，1分钱也是钱啊。ps:这个时候总会想起，一个同学说过，苍蝇腿也是肉啊）<br>openid==用户标识==trade_type=JSAPI，此参数必传，用户在商户appid下的唯一标识。（要是不知道这个从哪里来的话，没关系。微信不是给咱写文档了吗<a href="https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_4）" target="_blank" rel="external">https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_4）</a><br>还有最最重要的一个，重要的角色总要在最后登场。<br>sign==签名==官方给的签名算法。<a href="https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_3。没有看懂，看不太懂，你觉得你看懂了，没关系，不遇到几次签名错误，好意思说自己做过微信支付开发吗。" target="_blank" rel="external">https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_3。没有看懂，看不太懂，你觉得你看懂了，没关系，不遇到几次签名错误，好意思说自己做过微信支付开发吗。</a><br>说道这个sign还有一个更重要的参数。参与签名的参数。反正我是找了好久才找到。（公司运营申请的微信支付，当我找她要的时候，他的表情是这样子的。）<br>key==key设置路径：微信商户平台(pay.weixin.qq.com)–&gt;账户设置–&gt;API安全–&gt;密钥设置<br><img src="http://images2015.cnblogs.com/blog/456549/201606/456549-20160621171040303-835085944.png" alt=""><br>在这里：<br>网上有说怎么找得。我也懒得去找。直接自己想了一个字符串，然后用MD5加密成32位的字符串，重新设置的。<br>生成sign签名的时候，要用到这个key值，所以，要保存好。<br>我看别人生成签名（sign）用了很多，反正我就用了上面给出的那些参数生成的sign.（这个上面指的是我的博客上面，不是微信上面。为了减少误解，贴出我生成sign签名的参数）<br>我生成sign签名的参数<br><img src="http://images2015.cnblogs.com/blog/456549/201609/456549-20160902102651152-288420637.png" alt=""></p>
+<p>准备好以上参数之后，封装成XML<br>格式如下：<br>复制代码<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;</div><div class="line"><span class="tag">&lt;<span class="name">xml</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">appid</span>&gt;</span>wxb1427ebebexxxxxx<span class="tag">&lt;/<span class="name">appid</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">body</span>&gt;</span>XXX费用<span class="tag">&lt;/<span class="name">body</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">device_info</span>&gt;</span>WEB<span class="tag">&lt;/<span class="name">device_info</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">mch_id</span>&gt;</span>132186xxxx<span class="tag">&lt;/<span class="name">mch_id</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">nonce_str</span>&gt;</span>6AED000AF86A084F9CB0264161E29DD3<span class="tag">&lt;/<span class="name">nonce_str</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">notify_url</span>&gt;</span>https://一个域名/api/wechatPay/jsapiPayNotify<span class="tag">&lt;/<span class="name">notify_url</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">openid</span>&gt;</span>oo8WUt0taCqjt552htW1vw-xxxxx<span class="tag">&lt;/<span class="name">openid</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">out_trade_no</span>&gt;</span>1<span class="tag">&lt;/<span class="name">out_trade_no</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">sign</span>&gt;</span>各种排序+key生成的那个sign<span class="tag">&lt;/<span class="name">sign</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">total_fee</span>&gt;</span>1<span class="tag">&lt;/<span class="name">total_fee</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">trade_type</span>&gt;</span>JSAPI<span class="tag">&lt;/<span class="name">trade_type</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">xml</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<p>调用微信的统一下单地址：<a href="https://api.mch.weixin.qq.com/pay/unifiedorder" target="_blank" rel="external">https://api.mch.weixin.qq.com/pay/unifiedorder</a><br>NB：<br>=================划重点beign==20170728增加============<br>调用统一下单地址时传的参数个参数名称和参数值与生成签名时相比，<br>          ★   调用统一下单时多了一个sign的参数，其他参数名称需要全部相同。<br>          ★   调用统一下单时多了一个sign的参数，其他参数名称需要全部相同。<br>          ★   调用统一下单时多了一个sign的参数，其他参数名称需要全部相同。<br>   nonce_str的值可以不同<br>获取预支付ID时，如果返回值是【签名错误】。那真是的你的签名错了，请仔细核对生成sign的参数名称、参数值和调用统一下单接口的参数名称和参数值<br>=================划重点end==20170728增加============<br> 见证奇迹的时刻。如果以上参数都神奇的对了，那么会收到微信返回的XML字符串，格式如下<br>复制代码<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">xml</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">return_code</span>&gt;</span>&lt;![CDATA[SUCCESS]]&gt;<span class="tag">&lt;/<span class="name">return_code</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">return_msg</span>&gt;</span>&lt;![CDATA[OK]]&gt;<span class="tag">&lt;/<span class="name">return_msg</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">appid</span>&gt;</span>&lt;![CDATA[wxb1427ebebexxxxxx]]&gt;<span class="tag">&lt;/<span class="name">appid</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">mch_id</span>&gt;</span>&lt;![CDATA[132186xxxx]]&gt;<span class="tag">&lt;/<span class="name">mch_id</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">device_info</span>&gt;</span>&lt;![CDATA[WEB]]&gt;<span class="tag">&lt;/<span class="name">device_info</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">nonce_str</span>&gt;</span>&lt;![CDATA[Hh4LFHUUvtDYtNdp]]&gt;<span class="tag">&lt;/<span class="name">nonce_str</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">sign</span>&gt;</span>&lt;![CDATA[079F8A915FD3044F4A17D75F4945E955]]&gt;<span class="tag">&lt;/<span class="name">sign</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">result_code</span>&gt;</span>&lt;![CDATA[SUCCESS]]&gt;<span class="tag">&lt;/<span class="name">result_code</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">prepay_id</span>&gt;</span>&lt;![CDATA[wx20160617155030d9e6a0e48b0533061255]]&gt;<span class="tag">&lt;/<span class="name">prepay_id</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">trade_type</span>&gt;</span>&lt;![CDATA[JSAPI]]&gt;<span class="tag">&lt;/<span class="name">trade_type</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">xml</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<p>我们需要的，就是这货</p>
+<p>prepay_id</p>
+<p>获取到这货之后，第一步骤已经结束了，可以去喝个茶，吃个冰棍，小庆祝一下。</p>
+<p>2、H5调起微信支付的内置JS<br> 后台传回前台的参数中，应包含以下几项：<br>appId==这个是不变的==永远不变<br>timeStamp==时间戳==规则：<a href="https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_2。看完仍是一脸迷茫的，没关系，我们有工具类。谁知道呢，直接调用就好了" target="_blank" rel="external">https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_2。看完仍是一脸迷茫的，没关系，我们有工具类。谁知道呢，直接调用就好了</a></p>
+<p>nonceStr ==反正我用的跟刚才签名是同一个随机字符串。理论上不用应该也没有关系的，勤快的小伙伴可以试试</p>
+<p>package==订单详情扩展字符串==统一下单接口返回的prepay_id参数值，提交格式如：prepay_id=<em>*</em>（你猜对了。刚才我们费那么大力气，获得到的prepay_id就是在这里用的。第一次使用的时候，一直拿订单ID去请求，然后微信给我的信息就是请求参数错误，缺少参数$key0$.不要告诉我，只有我一个人。）<br>signType==签名方式==签名算法，暂支持MD5<br>paySign==签名==这个签名，要重新生成，在后台。使用如上4个参数 5个参数+一个key（永远不变）。（我生成签名的时间戳和传回给前台的时间戳就是timeStamp是同一个。不一样行不行，木有验证）<br>生成paySign的代码<br><img src="http://images2015.cnblogs.com/blog/456549/201609/456549-20160907141402160-103204233.png" alt=""><br>NB:生成prepay_id时appid是小写的i,生成paySign时，appId是大写的I</p>
+<p>到此为止如果一切顺利，你会看到这样子的一个页面。<br>但是如果，你没有看到这个。而是提示，目录未授权，或者测试账号未在白名单中，我觉得，这才是这篇博客的正确打开方式呢。<br>微信公众号后台，微信支付，开发配置中有一个支付授权目录，测试授权目录，测试白名单。（终于登场了，等的花都谢了）<br> 支付授权目录：开发时，先放一放。（邓小平爷爷在对待中日关系时曾经说过，我们解决不了的问题，先放一放。）<br>测试授权目录：我们要填写的就是这个了。要一个外网能访问到的地址。ip也可以（亲测可以的）。如果你的ip，外网不能访问，找运维同学解决。建议，配置一个测试用的外网可访问的域名。支付配置不允许ip地址了啊，只允许icp认证过的网址。（感谢评论区的同学）<br>测试白名单：这个不解释<br><img src="http://images2015.cnblogs.com/blog/456549/201606/456549-20160621174221069-1220613342.png" alt=""><br>输入密码，然后，就会看到这样子的结果。（这也不需要我们做什么了）<br><img src="http://images2015.cnblogs.com/blog/456549/201606/456549-20160621174258756-429407437.png" alt=""></p>
+<p>好激动啊，赶紧去吃点东西，抑制一下，内心的激动。<br>剩下的，我们还有两件事情要去做。先说简单的。<br>3、支付成功之后跳转回自己的系统的某个页面<br>复制代码<br><figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">onBridgeReady</span>(<span class="params"></span>)</span>&#123;</div><div class="line">   WeixinJSBridge.invoke(</div><div class="line">       <span class="string">'getBrandWCPayRequest'</span>, &#123;</div><div class="line">           <span class="string">"appId"</span> : appId,       <span class="comment">//公众号名称，由商户传入</span></div><div class="line">           <span class="string">"timeStamp"</span>:timeStamp, <span class="comment">//时间戳，自1970年以来的秒数</span></div><div class="line">           <span class="string">"nonceStr"</span> : nonceStr, <span class="comment">//随机串</span></div><div class="line">           <span class="string">"package"</span> : Package,</div><div class="line">           <span class="string">"signType"</span> :signType,  <span class="comment">//微信签名方式：</span></div><div class="line">           <span class="string">"paySign"</span> : paySign     <span class="comment">//微信签名</span></div><div class="line"></div><div class="line">       &#125;,</div><div class="line">       <span class="function"><span class="keyword">function</span>(<span class="params">res</span>)</span>&#123;</div><div class="line">           <span class="keyword">if</span>(res.err_msg == <span class="string">"get_brand_wcpay_request:ok"</span> ) &#123;</div><div class="line">               <span class="built_in">window</span>.location.replace(<span class="string">"index.html"</span>);</div><div class="line">           &#125;</div><div class="line">       &#125;</div><div class="line">   );</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>上述代码中的，红色部分，修改成你想去的页面即可。是不是好奇replace是什么鬼。移步这里，看一下：<a href="http://www.xuebuyuan.com/2140432.html" target="_blank" rel="external">http://www.xuebuyuan.com/2140432.html</a></p>
+<p>4，最后一部分啦。fighting</p>
+<p>该部分有以下3小步骤</p>
+<p>　　　　1）解析传过来的流信息，通过重新签名的方式验证流中包含的信息的正确性。就是判断这个信息到底是不是微信发的</p>
+<p>　　　　2）return_code和result_code都是SUCCESS的话，处理商户自己的业务逻辑。就是订单的支付状态啊等一些信息。</p>
+<p>　　　　3）告诉微信，我收到你的返回值了。不用在发了。</p>
+<p>关于以上三点的解释。微信官方是这么说的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">//支付完成后，微信会把相关支付和用户信息发送到商户设定的通知URL，</div><div class="line">//验证签名，并回应微信。</div><div class="line">//对后台通知交互时，如果微信收到商户的应答不是成功或超时，微信认为通知失败，</div><div class="line">//微信会通过一定的策略（如30分钟共8次）定期重新发起通知，</div><div class="line">//尽可能提高通知的成功率，但微信不保证通知最终能成功。</div><div class="line"></div><div class="line">//商户自行增加处理流程,</div><div class="line">//例如：更新订单状态</div><div class="line">//例如：数据库操作</div><div class="line">//例如：推送支付完成信息</div></pre></td></tr></table></figure>
+<p>还记得我们在第一步生成预支付id(prepay_id时的那个notify_url吗。如果不记得了，请往上翻。如果当时只是随便写了一个，那么这会需要去改一改了。)</p>
+<p>一个能访问的到的action.同样地址需要外网能访问的到。没有试ip好不好使。开发这部分功能的时候，运维同学已经配置了测试域名。好开心啊，终于不用在纠结于一些交互配置了。</p>
+<p>和支付宝不同，微信返回的是流。和支付宝不同，微信返回的是流。和支付宝不同，微信返回的是流。重要的事情说三遍</p>
+<p>解析之后，得到的格式是这样子的</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">xml</span>&gt;</span><span class="tag">&lt;<span class="name">appid</span>&gt;</span>&lt;![CDATA[wxb1427ebebeeaxxxx]]&gt;<span class="tag">&lt;/<span class="name">appid</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">bank_type</span>&gt;</span>&lt;![CDATA[CFT]]&gt;<span class="tag">&lt;/<span class="name">bank_type</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">cash_fee</span>&gt;</span>&lt;![CDATA[1]]&gt;<span class="tag">&lt;/<span class="name">cash_fee</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">device_info</span>&gt;</span>&lt;![CDATA[WEB]]&gt;<span class="tag">&lt;/<span class="name">device_info</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">fee_type</span>&gt;</span>&lt;![CDATA[CNY]]&gt;<span class="tag">&lt;/<span class="name">fee_type</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">is_subscribe</span>&gt;</span>&lt;![CDATA[Y]]&gt;<span class="tag">&lt;/<span class="name">is_subscribe</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">mch_id</span>&gt;</span>&lt;![CDATA[132186xxxx]]&gt;<span class="tag">&lt;/<span class="name">mch_id</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">nonce_str</span>&gt;</span>&lt;![CDATA[07FC15C9D169EE48573EDD749D25945D]]&gt;<span class="tag">&lt;/<span class="name">nonce_str</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">openid</span>&gt;</span>&lt;![CDATA[oo8WUt0taCqjt552htW1vw-xxxxx]]&gt;<span class="tag">&lt;/<span class="name">openid</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">out_trade_no</span>&gt;</span>&lt;![CDATA[你的订单编号]]&gt;<span class="tag">&lt;/<span class="name">out_trade_no</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">result_code</span>&gt;</span>&lt;![CDATA[SUCCESS]]&gt;<span class="tag">&lt;/<span class="name">result_code</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">return_code</span>&gt;</span>&lt;![CDATA[SUCCESS]]&gt;<span class="tag">&lt;/<span class="name">return_code</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">sign</span>&gt;</span>&lt;![CDATA[E69940B3EDC437CB5A181210D523806E]]&gt;<span class="tag">&lt;/<span class="name">sign</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">time_end</span>&gt;</span>&lt;![CDATA[20160621134204]]&gt;<span class="tag">&lt;/<span class="name">time_end</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">total_fee</span>&gt;</span>1<span class="tag">&lt;/<span class="name">total_fee</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">trade_type</span>&gt;</span>&lt;![CDATA[JSAPI]]&gt;<span class="tag">&lt;/<span class="name">trade_type</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">transaction_id</span>&gt;</span>&lt;![CDATA[400386200120160621763973xxxx]]&gt;<span class="tag">&lt;/<span class="name">transaction_id</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">xml</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>==========================================20170726更新====================================</p>
+<p>微信目前有鼓励金支付，在支付过程中支付金额大于鼓励金金额既可以使用。如果在支付时使用了鼓励金，则回调的流的xml格式如下</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">xml</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">appid</span>&gt;</span>&lt;![CDATA[XXXXXX]]&gt;<span class="tag">&lt;/<span class="name">appid</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">bank_type</span>&gt;</span>&lt;![CDATA[CFT]]&gt;<span class="tag">&lt;/<span class="name">bank_type</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">cash_fee</span>&gt;</span>&lt;![CDATA[1]]&gt;<span class="tag">&lt;/<span class="name">cash_fee</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">coupon_count</span>&gt;</span>&lt;![CDATA[1]]&gt;<span class="tag">&lt;/<span class="name">coupon_count</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">coupon_fee</span>&gt;</span>30<span class="tag">&lt;/<span class="name">coupon_fee</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">coupon_fee_0</span>&gt;</span>&lt;![CDATA[30]]&gt;<span class="tag">&lt;/<span class="name">coupon_fee_0</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">coupon_id_0</span>&gt;</span>&lt;![CDATA[2000000001082991244]]&gt;<span class="tag">&lt;/<span class="name">coupon_id_0</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">device_info</span>&gt;</span>&lt;![CDATA[WEB]]&gt;<span class="tag">&lt;/<span class="name">device_info</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">fee_type</span>&gt;</span>&lt;![CDATA[CNY]]&gt;<span class="tag">&lt;/<span class="name">fee_type</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">is_subscribe</span>&gt;</span>&lt;![CDATA[Y]]&gt;<span class="tag">&lt;/<span class="name">is_subscribe</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">mch_id</span>&gt;</span>&lt;![CDATA[1321867101]]&gt;<span class="tag">&lt;/<span class="name">mch_id</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">nonce_str</span>&gt;</span>&lt;![CDATA[D0AC1ED0C5CB9ECBCA3D2496EC1AD984]]&gt;<span class="tag">&lt;/<span class="name">nonce_str</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">openid</span>&gt;</span>&lt;![CDATA[oo8WUt0AjI8G9TNb5W3wmGUxVV1U]]&gt;<span class="tag">&lt;/<span class="name">openid</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">out_trade_no</span>&gt;</span>&lt;![CDATA[XXXXXX]]&gt;<span class="tag">&lt;/<span class="name">out_trade_no</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">result_code</span>&gt;</span>&lt;![CDATA[SUCCESS]]&gt;<span class="tag">&lt;/<span class="name">result_code</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">return_code</span>&gt;</span>&lt;![CDATA[SUCCESS]]&gt;<span class="tag">&lt;/<span class="name">return_code</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">sign</span>&gt;</span>&lt;![CDATA[9895XXXXX91E1D3F710A3D021147]]&gt;<span class="tag">&lt;/<span class="name">sign</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">time_end</span>&gt;</span>&lt;![CDATA[20170726184839]]&gt;<span class="tag">&lt;/<span class="name">time_end</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">total_fee</span>&gt;</span>31<span class="tag">&lt;/<span class="name">total_fee</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">trade_type</span>&gt;</span>&lt;![CDATA[JSAPI]]&gt;<span class="tag">&lt;/<span class="name">trade_type</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">transaction_id</span>&gt;</span>&lt;![CDATA[40027220012017072XXX93391176]]&gt;<span class="tag">&lt;/<span class="name">transaction_id</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">xml</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>注意上述代码中阴影的4行代码。</p>
+<p>微信返回的</p>
+<p>coupon_count<br>coupon_fee&gt;<br>coupon_fee_0<br>coupon_id_0</p>
+<p>的这4个参数中coupon_fee_0和coupon_id_0，官方给出的参数是coupon<em>id</em>$n和coupon<em>fee</em>$n，$n为下标，从0开始编号。笔者在处理验签时是将xml转化成了JAVA对象，对于这种动态的参数目前没有什么好的解决方案，目前因为只有_0，所以只定义了一个参数叫做_0，万能的网友在使用的过程中如果有好的解决方案，请不吝赐教。</p>
+<p>============================================20170726更新=================================</p>
+<p>对以上第一点和第三点做个解释。</p>
+<p>再次吐槽一下。微信真的很喜欢用签名啊。整个过程，3遍签名。也是醉了。</p>
+<p>1）我们看到上述微信返回的xml中含有很多字段。使用上述xml中，处sign意外的值+key，进行签名。你没有看错。包含result_code和return_code。</p>
+<p>微信的官方对于签名有解释。</p>
+<p>原谅我真的好久不学语文了。真的没理解这句话，是用微信回调函数中传的参数，进行重新签名。傻傻的，还在想，用第二次签名是的参数进行签名，时间戳怎么办，要不要存在数据库里面。</p>
+<p>将获得的签名与xml中的sign对比，如果相同，证明是微信返回的通知。如果不同，你的通知地址可能被黑客破解了。要不要告诉老板呢，告诉老板了，我怎么解决呢。</p>
+<p>2）商户逻辑处理，不解释</p>
+<p>3）告诉微信，我收到了你的通知，不需要在发送了。</p>
+<p>怎么告诉微信呢。我翻遍了微信的文档，也没有找到回复微信通知这个url。</p>
+<p>经人指导，再一次的刷新了认知观。用response.</p>
+<p>我是这么写的:(20170727修改)</p>
+<p>返回参数参照微信官方文档：<a href="https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_7" target="_blank" rel="external">https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_7</a></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">String xml = "<span class="tag">&lt;<span class="name">xml</span>&gt;</span> <span class="tag">&lt;<span class="name">return_code</span>&gt;</span>&lt;![CDATA[SUCCESS]]&gt;<span class="tag">&lt;/<span class="name">return_code</span>&gt;</span><span class="tag">&lt;<span class="name">return_msg</span>&gt;</span>&lt;![CDATA[OK]]&gt;<span class="tag">&lt;/<span class="name">return_msg</span>&gt;</span><span class="tag">&lt;/<span class="name">xml</span>&gt;</span>";</div><div class="line">response.getWriter().write(xml);</div></pre></td></tr></table></figure>
+<p>这个xml就是微信给你的那个流转化的字符串。</p>
+<p>xml中的return_code要是SUCCESS或者FAIL</p>
+<p>别问我怎么知道的。官方的demo里面写的</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span>($notify-&gt;checkSign() == FALSE)&#123;</div><div class="line">    $notify-&gt;setReturnParameter(<span class="string">"return_code"</span>,<span class="string">"FAIL"</span>);<span class="comment">//返回状态码</span></div><div class="line">    $notify-&gt;setReturnParameter(<span class="string">"return_msg"</span>,<span class="string">"签名失败"</span>);<span class="comment">//返回信息</span></div><div class="line">&#125;<span class="keyword">else</span>&#123;</div><div class="line">    $notify-&gt;setReturnParameter(<span class="string">"return_code"</span>,<span class="string">"SUCCESS"</span>);<span class="comment">//设置返回码</span></div><div class="line">&#125;</div><div class="line">$returnXml = $notify-&gt;returnXml();</div></pre></td></tr></table></figure>
+<p>按照这个写法，返回的数据。在没有收到微信的通知。</p>
+<p>之前在测试的时候，返回字符串之后，在没有收到微信的通知，这两天偶然查日志，发现，微信在一直的，通知，不一定是8次。从打印的日志看</p>
+<p>有4次，6次。突然，好晕啊。有明白的朋友，还请多多指教</p>
+<hr>
+<p>微信公众号支付–JSAPI的开发思路和一下参数的具体解释，全部完成了。具体代码。等我从公司项目里面抽出来。在整理。</p>
+<p>还有一个坑：我们在第一步的时候，body传的是英文，如果传中文，直接能用的赶紧感谢一下上苍，返回参数错误的，应该是正常吧。</p>
+<p>我的对象和xml转化是用的Java的JAXBContext。很好用的赶脚。赶脚比XMLStream好用。具体写法，会在稍后的代码中，写明。</p>
+<p>———————-我的幽默你不懂————————————-</p>
+<p>最后一个问题：开头说了要讲一个笑话。</p>
+<p>最近在学英语，一天和同学一起走路。旁边的建筑特别密集。此为背景。</p>
+<p>他说，他不喜欢这边的建筑，楼与楼之间距离太密了，像集装箱一样。</p>
+<p>然后我问，你知道集装箱的英文怎么说嘛。</p>
+<p>朋友一脸的表情，看着我，问我，是什么。</p>
+<p>说完，我就后悔了，我也不知道。然后我镇定自若的说，docker.</p>
+<p>————————-我的幽默你不懂——————————————</p>
+<p>————————–AD—————————————</p>
+
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+
+</div>
+
+    <a data-url="http://github.com/b2stry/2017/10/30/【转载】微信公众号支付开发全过程-Java/" data-id="cjizjt0hs001juoqezpejichb" class="article-share-link"><i class="fa fa-share"></i>分享</a>
+<script>
+    (function ($) {
+        // Prevent duplicate binding
+        if (typeof(__SHARE_BUTTON_BINDED__) === 'undefined' || !__SHARE_BUTTON_BINDED__) {
+            __SHARE_BUTTON_BINDED__ = true;
+        } else {
+            return;
+        }
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="fa fa-twitter article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="fa fa-facebook article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="fa fa-pinterest article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="fa fa-google article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+            
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2017/10/31/【Java】-SuppressWarnings注解/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    【Java】@SuppressWarnings注解
+                
+            </div>
+        </a>
+    
+    
+        <a href="/2017/10/29/Python爬虫小例子/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">Python爬虫小例子</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+
+</section>
+            
+                
+<aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/9420/04/02/《阿里感悟》如何在三年内成长为一名技术专家？/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/读书/">读书</a></p>
+                            <p class="item-title"><a href="/9420/04/02/《阿里感悟》如何在三年内成长为一名技术专家？/" class="title">【置顶】《阿里感悟》如何在三年内成长为一名技术专家？</a></p>
+                            <p class="item-date"><time datetime="9420-04-02T07:14:07.000Z" itemprop="datePublished">9420-04-02</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/03/21/远程通信的几种选择/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/远程通信/">远程通信</a></p>
+                            <p class="item-title"><a href="/2018/03/21/远程通信的几种选择/" class="title">远程通信的几种选择</a></p>
+                            <p class="item-date"><time datetime="2018-03-21T14:19:26.000Z" itemprop="datePublished">2018-03-21</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/03/17/Tomcat-性能调优/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/tomcat调优/">tomcat调优</a></p>
+                            <p class="item-title"><a href="/2018/03/17/Tomcat-性能调优/" class="title">Tomcat 性能调优</a></p>
+                            <p class="item-date"><time datetime="2018-03-17T14:53:21.000Z" itemprop="datePublished">2018-03-17</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/03/13/Map中的hash/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/hash/">hash</a></p>
+                            <p class="item-title"><a href="/2018/03/13/Map中的hash/" class="title">Map中的hash()</a></p>
+                            <p class="item-date"><time datetime="2018-03-13T11:08:46.000Z" itemprop="datePublished">2018-03-13</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/03/05/springboot集成swagger2，构建优雅的Restful-API/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/swagger/">swagger</a></p>
+                            <p class="item-title"><a href="/2018/03/05/springboot集成swagger2，构建优雅的Restful-API/" class="title">Spring Boot集成Swagger2，构建优雅的Restful API</a></p>
+                            <p class="item-date"><time datetime="2018-03-05T08:20:46.000Z" itemprop="datePublished">2018-03-05</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Ajax/">Ajax</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Elasticsearch/">Elasticsearch</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Js/">Js</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring-Boot/">Spring Boot</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/activemq/">activemq</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/algorithm/">algorithm</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/command/">command</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/docker/">docker</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/fetch/">fetch</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/hash/">hash</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/interview/">interview</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jsr303/">jsr303</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/kafka/">kafka</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/network/">network</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/python/">python</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/rabbitmq/">rabbitmq</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/redis/">redis</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/regex/">regex</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/spring/">spring</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/sql/">sql</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/swagger/">swagger</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/thymeleaf/">thymeleaf</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/tomcat调优/">tomcat调优</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/消息中间件/">消息中间件</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/读书/">读书</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/远程通信/">远程通信</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/集群/">集群</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/集群/分布式/">分布式</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/集群/分布式/云计算/">云计算</a><span class="category-list-count">1</span></li></ul></li></ul></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">归档</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/9420/04/">April 9420</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a><span class="archive-list-count">2</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签</h3>
+        <div class="widget">
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ajax/">Ajax</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Elasticsearch/">Elasticsearch</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JSP/">JSP</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Boot/">Spring Boot</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/fetch/">fetch</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hash/">hash</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jsr303/">jsr303</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/">linux</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/">mysql</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/">redis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring/">spring</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql/">sql</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/swagger/">swagger</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/thymeleaf/">thymeleaf</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat调优/">tomcat调优</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vim/">vim</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/一键评教/">一键评教</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/云计算/">云计算</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/分布式/">分布式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/正则表达式/">正则表达式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/消息中间件/">消息中间件</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/计算机网络/">计算机网络</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/读书/">读书</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/远程通信/">远程通信</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/集群/">集群</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/面试/">面试</a><span class="tag-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签云</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/Ajax/" style="font-size: 13.33px;">Ajax</a> <a href="/tags/Elasticsearch/" style="font-size: 10px;">Elasticsearch</a> <a href="/tags/JSP/" style="font-size: 10px;">JSP</a> <a href="/tags/Java/" style="font-size: 13.33px;">Java</a> <a href="/tags/Python/" style="font-size: 10px;">Python</a> <a href="/tags/Spring-Boot/" style="font-size: 16.67px;">Spring Boot</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/fetch/" style="font-size: 10px;">fetch</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/hash/" style="font-size: 10px;">hash</a> <a href="/tags/java/" style="font-size: 13.33px;">java</a> <a href="/tags/jsr303/" style="font-size: 10px;">jsr303</a> <a href="/tags/linux/" style="font-size: 13.33px;">linux</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/python/" style="font-size: 13.33px;">python</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a> <a href="/tags/shell/" style="font-size: 13.33px;">shell</a> <a href="/tags/spring/" style="font-size: 10px;">spring</a> <a href="/tags/sql/" style="font-size: 10px;">sql</a> <a href="/tags/swagger/" style="font-size: 10px;">swagger</a> <a href="/tags/thymeleaf/" style="font-size: 10px;">thymeleaf</a> <a href="/tags/tomcat/" style="font-size: 10px;">tomcat</a> <a href="/tags/tomcat调优/" style="font-size: 10px;">tomcat调优</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/一键评教/" style="font-size: 10px;">一键评教</a> <a href="/tags/云计算/" style="font-size: 10px;">云计算</a> <a href="/tags/分布式/" style="font-size: 10px;">分布式</a> <a href="/tags/正则表达式/" style="font-size: 10px;">正则表达式</a> <a href="/tags/消息中间件/" style="font-size: 20px;">消息中间件</a> <a href="/tags/算法/" style="font-size: 13.33px;">算法</a> <a href="/tags/计算机网络/" style="font-size: 10px;">计算机网络</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/远程通信/" style="font-size: 10px;">远程通信</a> <a href="/tags/集群/" style="font-size: 10px;">集群</a> <a href="/tags/面试/" style="font-size: 10px;">面试</a>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">友情链接(排名不分先后)</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a target="_blank" href="http://ifeve.com/">并发编程网</a>
+                    </li>
+                
+                    <li>
+                        <a target="_blank" href="http://www.sivan0222.cn">吴晓文</a>
+                    </li>
+                
+                    <li>
+                        <a target="_blank" href="http://www.rxdonny.com">唐仁鑫</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+
+            
+        </div>
+        <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<footer id="footer">
+	
+    <div class="outer">
+    	<a target="_blank" href="https://github.com/b2stry"><span class="fa-stack fa-lg">
+                                <i class="fa fa-github fa-stack-2x fa-inverse" style="color:#898d92"></i></span></a>
+        <div id="footer-info" class="inner">
+            Copyright&nbsp;&copy; 2018 <a href="https://github.com/B2stry" target="_blank">Shallow An</a>  &nbsp;&nbsp;<br><span id="busuanzi_container_site_pv" style="font-size:13px"> 
+  		pv: <span id="busuanzi_value_site_pv" style="font-size:10px"></span>
+	</span><br>&nbsp;&nbsp;いつからか好きになっていました<br>中心藏之，何日忘之<br><br>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="http://github.com/ppoffice" target="_blank">PPOffice</a>
+        </div>
+    </div>
+</footer>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?95a2d1c2cf767a8efae55252dd5e5de4";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+        
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+        <script type="text/x-mathjax-config">
+            MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
+</html>

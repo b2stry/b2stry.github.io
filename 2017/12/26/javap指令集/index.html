@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <meta charset="utf-8">
+    
+    <title>Javap指令集 | 夏浅安のブログ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="Javap指令查询。">
+<meta name="keywords" content="Java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Javap指令集">
+<meta property="og:url" content="http://github.com/b2stry/2017/12/26/javap指令集/index.html">
+<meta property="og:site_name" content="夏浅安のブログ">
+<meta property="og:description" content="Javap指令查询。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://raw.githubusercontent.com/b2stry/imgrepo/master/java.jpg">
+<meta property="og:updated_time" content="2018-02-03T07:32:11.091Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Javap指令集">
+<meta name="twitter:description" content="Javap指令查询。">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/b2stry/imgrepo/master/java.jpg">
+    
+
+    
+
+    
+        <link rel="icon" href="/images/yu.png" />
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+    
+        <script>
+var _hmt = _hmt || [];
+(function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?865692d8325f5ebc46f2007ac5a4f929";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+	
+})();
+</script>
+
+    
+
+
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+               
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/.">Home</a>
+                
+                    <a class="main-nav-link" href="/archives">Archives</a>
+                
+                    <a class="main-nav-link" href="/categories">Categories</a>
+                
+                    <a class="main-nav-link" href="/tags">Tags</a>
+                
+                    <a class="main-nav-link" href="/about">About</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/images/mianbao.png" />
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/.">Home</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">Archives</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">Categories</a></td>
+                
+                    <td><a class="main-nav-link" href="/tags">Tags</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">About</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/images/mianbao.png" />
+            <h2 id="name">ShallowAn</h2>
+            <h3 id="title">世界远比你想象的更精彩,<br>别放弃!</h3>
+            <span id="location"><i class="fa fa-map-marker"></i>中国, 长沙</span>
+            <a style="margin:20px 50px 10px" id="follow" target="_blank" href="https://github.com/b2stry/">关注</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                42
+                <span>文章</span>
+            </div>
+            <div class="article-info-block">
+                35
+                <span>标签</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="http://main.shallowan.cn" target="_blank" title="home" class=tooltip>
+                            <i class="fa fa-home"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="http://47.93.242.254:8888/mytwitter/" target="_blank" title="twitter" class=tooltip>
+                            <i class="fa fa-twitter"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://weibo.com/shallowAn" target="_blank" title="weibo" class=tooltip>
+                            <i class="fa fa-weibo"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://www.linkedin.com/in/%E9%9C%88-%E5%88%98-250b7b152/" target="_blank" title="linkedin" class=tooltip>
+                            <i class="fa fa-linkedin"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="javascript:window.open('http://www.shallowan.cn/imgrepo/wechatcode.png')" target="_blank" title="weixin" class=tooltip>
+                            <i class="fa fa-weixin"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://github.com/b2stry/" target="_blank" title="github" class=tooltip>
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+</aside>
+
+            
+            <section id="main"><article id="post-javap指令集" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+            
+	
+		<img src="https://raw.githubusercontent.com/b2stry/imgrepo/master/java.jpg" class="article-banner" />
+	
+
+
+
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+            Javap指令集
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/2017/12/26/javap指令集/">
+            <time datetime="2017-12-26T14:08:36.000Z" itemprop="datePublished">2017-12-26</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/Java/">Java</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Java/">Java</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <p>Javap指令查询。<br><a id="more"></a></p>
+<blockquote>
+<p>栈和局部变量操作</p>
+<p>将常量压入栈的指令</p>
+</blockquote>
+<p><code>aconst_null</code> 将null对象引用压入栈</p>
+<p><code>iconst_m1</code> 将int类型常量-1压入栈</p>
+<p><code>iconst_0</code> 将int类型常量0压入栈</p>
+<p><code>iconst_1</code> 将int类型常量1压入栈</p>
+<p><code>iconst_2</code> 将int类型常量2压入栈</p>
+<p><code>iconst_3</code> 将int类型常量3压入栈</p>
+<p><code>iconst_4</code> 将int类型常量4压入栈</p>
+<p><code>iconst_5</code> 将int类型常量5压入栈</p>
+<p><code>lconst_0</code> 将long类型常量0压入栈</p>
+<p><code>lconst_1</code> 将long类型常量1压入栈</p>
+<p><code>fconst_0</code> 将float类型常量0压入栈</p>
+<p><code>fconst_1</code> 将float类型常量1压入栈</p>
+<p><code>dconst_0</code> 将double类型常量0压入栈</p>
+<p><code>dconst_1</code> 将double类型常量1压入栈</p>
+<p><code>bipush</code> 将一个8位带符号整数压入栈</p>
+<p><code>sipush</code> 将16位带符号整数压入栈</p>
+<p><code>ldc</code> 把常量池中的项压入栈</p>
+<p><code>ldc_w</code> 把常量池中的项压入栈（使用宽索引）</p>
+<p><code>ldc2_w</code> 把常量池中long类型或者double类型的项压入栈（使用宽索引）</p>
+<blockquote>
+<p>从栈中的局部变量中装载值的指令</p>
+</blockquote>
+<p><code>iload</code> 从局部变量中装载int类型值</p>
+<p><code>lload</code> 从局部变量中装载long类型值</p>
+<p><code>fload</code> 从局部变量中装载float类型值</p>
+<p><code>dload</code> 从局部变量中装载double类型值</p>
+<p><code>aload</code> 从局部变量中装载引用类型值（refernce）</p>
+<p><code>iload_0</code> 从局部变量0中装载int类型值</p>
+<p><code>iload_1</code> 从局部变量1中装载int类型值</p>
+<p><code>iload_2</code> 从局部变量2中装载int类型值</p>
+<p><code>iload_3</code> 从局部变量3中装载int类型值</p>
+<p><code>lload_0</code> 从局部变量0中装载long类型值</p>
+<p><code>lload_1</code> 从局部变量1中装载long类型值</p>
+<p><code>lload_2</code> 从局部变量2中装载long类型值</p>
+<p><code>lload_3</code> 从局部变量3中装载long类型值</p>
+<p><code>fload_0</code> 从局部变量0中装载float类型值</p>
+<p><code>fload_1</code> 从局部变量1中装载float类型值</p>
+<p><code>fload_2</code> 从局部变量2中装载float类型值</p>
+<p><code>fload_3</code> 从局部变量3中装载float类型值</p>
+<p><code>dload_0</code> 从局部变量0中装载double类型值</p>
+<p><code>dload_1</code> 从局部变量1中装载double类型值</p>
+<p><code>dload_2</code> 从局部变量2中装载double类型值</p>
+<p><code>dload_3</code> 从局部变量3中装载double类型值</p>
+<p><code>aload_0</code> 从局部变量0中装载引用类型值</p>
+<p><code>aload_1</code> 从局部变量1中装载引用类型值</p>
+<p><code>aload_2</code> 从局部变量2中装载引用类型值</p>
+<p><code>aload_3</code> 从局部变量3中装载引用类型值</p>
+<p><code>iaload</code> 从数组中装载int类型值</p>
+<p><code>laload</code> 从数组中装载long类型值</p>
+<p><code>faload</code> 从数组中装载float类型值</p>
+<p><code>daload</code> 从数组中装载double类型值</p>
+<p><code>aaload</code> 从数组中装载引用类型值</p>
+<p><code>baload</code> 从数组中装载byte类型或boolean类型值</p>
+<p><code>caload</code> 从数组中装载char类型值</p>
+<p><code>saload</code> 从数组中装载short类型值</p>
+<blockquote>
+<p>将栈中的值存入局部变量的指令</p>
+</blockquote>
+<p><code>istore</code> 将int类型值存入局部变量</p>
+<p><code>lstore</code> 将long类型值存入局部变量</p>
+<p><code>fstore</code> 将float类型值存入局部变量</p>
+<p><code>dstore</code> 将double类型值存入局部变量</p>
+<p><code>astore</code> 将将引用类型或returnAddress类型值存入局部变量</p>
+<p><code>istore_0</code> 将int类型值存入局部变量0</p>
+<p><code>istore_1</code> 将int类型值存入局部变量1</p>
+<p><code>istore_2</code> 将int类型值存入局部变量2</p>
+<p><code>istore_3</code> 将int类型值存入局部变量3</p>
+<p><code>lstore_0</code> 将long类型值存入局部变量0</p>
+<p><code>lstore_1</code> 将long类型值存入局部变量1</p>
+<p><code>lstore_2</code> 将long类型值存入局部变量2</p>
+<p><code>lstore_3</code> 将long类型值存入局部变量3</p>
+<p><code>fstore_0</code> 将float类型值存入局部变量0</p>
+<p><code>fstore_1</code> 将float类型值存入局部变量1</p>
+<p><code>fstore_2</code> 将float类型值存入局部变量2</p>
+<p><code>fstore_3</code> 将float类型值存入局部变量3</p>
+<p><code>dstore_0</code> 将double类型值存入局部变量0</p>
+<p><code>dstore_1</code> 将double类型值存入局部变量1</p>
+<p><code>dstore_2</code> 将double类型值存入局部变量2</p>
+<p><code>dstore_3</code> 将double类型值存入局部变量3</p>
+<p><code>astore_0</code> 将引用类型或returnAddress类型值存入局部变量0</p>
+<p><code>astore_1</code> 将引用类型或returnAddress类型值存入局部变量1</p>
+<p><code>astore_2</code> 将引用类型或returnAddress类型值存入局部变量2</p>
+<p><code>astore_3</code> 将引用类型或returnAddress类型值存入局部变量3</p>
+<p><code>iastore</code> 将int类型值存入数组中</p>
+<p><code>lastore</code> 将long类型值存入数组中</p>
+<p><code>fastore</code> 将float类型值存入数组中</p>
+<p><code>dastore</code> 将double类型值存入数组中</p>
+<p><code>aastore</code> 将引用类型值存入数组中</p>
+<p><code>bastore</code> 将byte类型或者boolean类型值存入数组中</p>
+<p><code>castore</code> 将char类型值存入数组中</p>
+<p><code>sastore</code> 将short类型值存入数组中</p>
+<blockquote>
+<p>wide指令</p>
+</blockquote>
+<p><code>wide</code> 使用附加字节扩展局部变量索引</p>
+<blockquote>
+<p>通用(无类型）栈操作</p>
+</blockquote>
+<p><code>nop</code> 不做任何操作</p>
+<p><code>pop</code> 弹出栈顶端一个字长的内容</p>
+<p><code>pop2</code> 弹出栈顶端两个字长的内容</p>
+<p><code>dup</code> 复制栈顶部一个字长内容</p>
+<p><code>dup_x1</code> 复制栈顶部一个字长的内容，然后将复制内容及原来弹出的两个字长的内容压入栈</p>
+<p><code>dup_x2</code> 复制栈顶部一个字长的内容，然后将复制内容及原来弹出的三个字长的内容压入栈</p>
+<p><code>dup2</code> 复制栈顶部两个字长内容</p>
+<p><code>dup2_x1</code> 复制栈顶部两个字长的内容，然后将复制内容及原来弹出的三个字长的内容压入栈</p>
+<p><code>dup2_x2</code> 复制栈顶部两个字长的内容，然后将复制内容及原来弹出的四个字长的内容压入栈</p>
+<p><code>swap</code> 交换栈顶部两个字长内容</p>
+<blockquote>
+<p>类型转换</p>
+</blockquote>
+<p><code>i2l</code> 把int类型的数据转化为long类型</p>
+<p><code>i2f</code> 把int类型的数据转化为float类型</p>
+<p><code>i2d</code> 把int类型的数据转化为double类型</p>
+<p><code>l2i</code> 把long类型的数据转化为int类型</p>
+<p><code>l2f</code> 把long类型的数据转化为float类型</p>
+<p><code>l2d</code> 把long类型的数据转化为double类型</p>
+<p><code>f2i</code> 把float类型的数据转化为int类型</p>
+<p><code>f2l</code> 把float类型的数据转化为long类型</p>
+<p><code>f2d</code> 把float类型的数据转化为double类型</p>
+<p><code>d2i</code> 把double类型的数据转化为int类型</p>
+<p><code>d2l</code> 把double类型的数据转化为long类型</p>
+<p><code>d2f</code> 把double类型的数据转化为float类型</p>
+<p><code>i2b</code> 把int类型的数据转化为byte类型</p>
+<p><code>i2c</code> 把int类型的数据转化为char类型</p>
+<p><code>i2s</code> 把int类型的数据转化为short类型</p>
+<blockquote>
+<p>整数运算</p>
+</blockquote>
+<p><code>iadd</code> 执行int类型的加法</p>
+<p><code>ladd</code> 执行long类型的加法</p>
+<p><code>isub</code> 执行int类型的减法</p>
+<p><code>lsub</code> 执行long类型的减法</p>
+<p><code>imul</code> 执行int类型的乘法</p>
+<p><code>lmul</code> 执行long类型的乘法</p>
+<p><code>idiv</code> 执行int类型的除法</p>
+<p><code>ldiv</code> 执行long类型的除法</p>
+<p><code>irem</code> 计算int类型除法的余数</p>
+<p><code>lrem</code> 计算long类型除法的余数</p>
+<p><code>ineg</code> 对一个int类型值进行取反操作</p>
+<p><code>lneg</code> 对一个long类型值进行取反操作</p>
+<p><code>iinc</code> 把一个常量值加到一个int类型的局部变量上</p>
+<blockquote>
+<p>逻辑运算</p>
+<p>移位操作</p>
+</blockquote>
+<p><code>ishl</code> 执行int类型的向左移位操作</p>
+<p><code>lshl</code> 执行long类型的向左移位操作</p>
+<p><code>ishr</code> 执行int类型的向右移位操作</p>
+<p><code>lshr</code> 执行long类型的向右移位操作</p>
+<p><code>iushr</code> 执行int类型的向右逻辑移位操作</p>
+<p><code>lushr</code> 执行long类型的向右逻辑移位操作</p>
+<blockquote>
+<p>按位布尔运算</p>
+</blockquote>
+<p><code>iand</code> 对int类型值进行“逻辑与”操作</p>
+<p><code>land</code> 对long类型值进行“逻辑与”操作</p>
+<p><code>ior</code> 对int类型值进行“逻辑或”操作</p>
+<p><code>lor</code> 对long类型值进行“逻辑或”操作</p>
+<p><code>ixor</code> 对int类型值进行“逻辑异或”操作</p>
+<p><code>lxor</code> 对long类型值进行“逻辑异或”操作</p>
+<blockquote>
+<p>浮点运算</p>
+</blockquote>
+<p><code>fadd</code> 执行float类型的加法</p>
+<p><code>dadd</code> 执行double类型的加法</p>
+<p><code>fsub</code> 执行float类型的减法</p>
+<p><code>dsub</code> 执行double类型的减法</p>
+<p><code>fmul</code> 执行float类型的乘法</p>
+<p><code>dmul</code> 执行double类型的乘法</p>
+<p><code>fdiv</code> 执行float类型的除法</p>
+<p><code>ddiv</code> 执行double类型的除法</p>
+<p><code>frem</code> 计算float类型除法的余数</p>
+<p><code>drem</code> 计算double类型除法的余数</p>
+<p><code>fneg</code> 将一个float类型的数值取反</p>
+<p><code>dneg</code> 将一个double类型的数值取反</p>
+<blockquote>
+<p>对象和数组</p>
+<p>对象操作指令</p>
+</blockquote>
+<p><code>new</code> 创建一个新对象</p>
+<p><code>checkcast</code> 确定对象为所给定的类型</p>
+<p><code>getfield</code> 从对象中获取字段</p>
+<p><code>putfield</code> 设置对象中字段的值</p>
+<p><code>getstatic</code> 从类中获取静态字段</p>
+<p><code>putstatic</code> 设置类中静态字段的值</p>
+<p><code>instanceof</code> 判断对象是否为给定的类型</p>
+<blockquote>
+<p>数组操作指令</p>
+</blockquote>
+<p><code>newarray</code> 分配数据成员类型为基本上数据类型的新数组</p>
+<p><code>anewarray</code> 分配数据成员类型为引用类型的新数组</p>
+<p><code>arraylength</code> 获取数组长度</p>
+<p><code>multianewarray</code> 分配新的多维数组</p>
+<blockquote>
+<p>控制流</p>
+<p>条件分支指令</p>
+</blockquote>
+<p><code>ifeq</code> 如果等于0，则跳转</p>
+<p><code>ifne</code> 如果不等于0，则跳转</p>
+<p><code>iflt</code> 如果小于0，则跳转</p>
+<p><code>ifge</code> 如果大于等于0，则跳转</p>
+<p><code>ifgt</code> 如果大于0，则跳转</p>
+<p><code>ifle</code> 如果小于等于0，则跳转</p>
+<p><code>if_icmpcq</code> 如果两个int值相等，则跳转</p>
+<p><code>if_icmpne</code> 如果两个int类型值不相等，则跳转</p>
+<p><code>if_icmplt</code> 如果一个int类型值小于另外一个int类型值，则跳转</p>
+<p><code>if_icmpge</code> 如果一个int类型值大于或者等于另外一个int类型值，则跳转</p>
+<p><code>if_icmpgt</code> 如果一个int类型值大于另外一个int类型值，则跳转</p>
+<p><code>if_icmple</code> 如果一个int类型值小于或者等于另外一个int类型值，则跳转</p>
+<p><code>ifnull</code> 如果等于null，则跳转</p>
+<p><code>ifnonnull</code> 如果不等于null，则跳转</p>
+<p><code>if_acmpeq</code> 如果两个对象引用相等，则跳转</p>
+<p><code>if_acmpnc</code> 如果两个对象引用不相等，则跳转</p>
+<blockquote>
+<p>比较指令</p>
+</blockquote>
+<p><code>lcmp</code> 比较long类型值</p>
+<p><code>fcmpl</code> 比较float类型值（当遇到NaN时，返回-1）</p>
+<p><code>fcmpg</code> 比较float类型值（当遇到NaN时，返回1）</p>
+<p><code>dcmpl</code> 比较double类型值（当遇到NaN时，返回-1）</p>
+<p><code>dcmpg</code> 比较double类型值（当遇到NaN时，返回1）</p>
+<blockquote>
+<p>无条件转移指令</p>
+</blockquote>
+<p><code>goto</code> 无条件跳转</p>
+<p><code>goto_w</code> 无条件跳转（宽索引）</p>
+<blockquote>
+<p>表跳转指令</p>
+</blockquote>
+<p><code>tableswitch</code> 通过索引访问跳转表，并跳转</p>
+<p><code>lookupswitch</code> 通过键值匹配访问跳转表，并执行跳转操作</p>
+<blockquote>
+<p>异常</p>
+</blockquote>
+<p><code>athrow</code> 抛出异常或错误</p>
+<blockquote>
+<p>finally子句</p>
+</blockquote>
+<p><code>jsr</code> 跳转到子例程</p>
+<p><code>jsr_w</code> 跳转到子例程（宽索引）</p>
+<p><code>rct</code> 从子例程返回</p>
+<blockquote>
+<p>方法调用与返回</p>
+</blockquote>
+<p>方&gt;法调用指令</p>
+<p><code>invokcvirtual</code> 运行时按照对象的类来调用实例方法</p>
+<p><code>invokespecial</code> 根据编译时类型来调用实例方法</p>
+<p><code>invokestatic</code> 调用类（静态）方法</p>
+<p><code>invokcinterface</code> 调用接口方法</p>
+<blockquote>
+<p>方法返回指令</p>
+</blockquote>
+<p><code>ireturn</code> 从方法中返回int类型的数据</p>
+<p><code>lreturn</code> 从方法中返回long类型的数据</p>
+<p><code>freturn</code> 从方法中返回float类型的数据</p>
+<p><code>dreturn</code> 从方法中返回double类型的数据</p>
+<p><code>areturn</code> 从方法中返回引用类型的数据</p>
+<p><code>return</code> 从方法中返回，返回值为void</p>
+<blockquote>
+<p>线程同步</p>
+</blockquote>
+<p><code>montiorenter</code> 进入并获取对象监视器</p>
+<p><code>monitorexit</code> 释放并退出对象监视器</p>
+<hr>
+<blockquote>
+<p>JVM指令助记符</p>
+</blockquote>
+<p>变量到操作数栈：iload,iload<em>,lload,lload</em>,fload,fload<em>,dload,dload</em>,aload,aload_</p>
+<p>操作数栈到变量：istore,istore<em>,lstore,lstore</em>,fstore,fstore<em>,dstore,dstor</em>,astore,astore_</p>
+<p>常数到操作数栈：bipush,sipush,ldc,ldc_w,ldc2_w,aconst_null,iconst<em>ml,iconst</em>,lconst<em>,fconst</em>,dconst_</p>
+<p>加：iadd,ladd,fadd,dadd</p>
+<p>减：isub,lsub,fsub,dsub</p>
+<p>乘：imul,lmul,fmul,dmul</p>
+<p>除：idiv,ldiv,fdiv,ddiv</p>
+<p>余数：irem,lrem,frem,drem</p>
+<p>取负：ineg,lneg,fneg,dneg</p>
+<p>移位：ishl,lshr,iushr,lshl,lshr,lushr</p>
+<p>按位或：ior,lor</p>
+<p>按位与：iand,land</p>
+<p>按位异或：ixor,lxor</p>
+<p>类型转换：i2l,i2f,i2d,l2f,l2d,f2d(放宽数值转换)</p>
+<p>i2b,i2c,i2s,l2i,f2i,f2l,d2i,d2l,d2f(缩窄数值转换)</p>
+<p>创建类实便：new</p>
+<p>创建新数组：newarray,anewarray,multianwarray</p>
+<p>访问类的域和类实例域：getfield,putfield,getstatic,putstatic</p>
+<p>把数据装载到操作数栈：baload,caload,saload,iaload,laload,faload,daload,aaload</p>
+<p>从操作数栈存存储到数组：bastore,castore,sastore,iastore,lastore,fastore,dastore,aastore</p>
+<p>获取数组长度：arraylength</p>
+<p>检相类实例或数组属性：instanceof,checkcast</p>
+<p>操作数栈管理：pop,pop2,dup,dup2,dup_xl,dup2_xl,dup_x2,dup2_x2,swap</p>
+<p>有条件转移：ifeq,iflt,ifle,ifne,ifgt,ifge,ifnull,ifnonnull,if_icmpeq,if_icmpene,</p>
+<p>if_icmplt,if_icmpgt,if_icmple,if_icmpge,if_acmpeq,if_acmpne,lcmp,fcmpl</p>
+<p>fcmpg,dcmpl,dcmpg</p>
+<p>复合条件转移：tableswitch,lookupswitch</p>
+<p>无条件转移：goto,goto_w,jsr,jsr_w,ret</p>
+<p>调度对象的实便方法：invokevirtual</p>
+<p>调用由接口实现的方法：invokeinterface</p>
+<p>调用需要特殊处理的实例方法：invokespecial</p>
+<p>调用命名类中的静态方法：invokestatic</p>
+<p>方法返回：ireturn,lreturn,freturn,dreturn,areturn,return</p>
+<p>异常：athrow</p>
+<p>finally关键字的实现使用：jsr,jsr_w,ret</p>
+
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+
+</div>
+
+    <a data-url="http://github.com/b2stry/2017/12/26/javap指令集/" data-id="cjizjt0gz0016uoqem94gi2df" class="article-share-link"><i class="fa fa-share"></i>分享</a>
+<script>
+    (function ($) {
+        // Prevent duplicate binding
+        if (typeof(__SHARE_BUTTON_BINDED__) === 'undefined' || !__SHARE_BUTTON_BINDED__) {
+            __SHARE_BUTTON_BINDED__ = true;
+        } else {
+            return;
+        }
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="fa fa-twitter article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="fa fa-facebook article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="fa fa-pinterest article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="fa fa-google article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+            
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2018/01/13/Java集合干货——ArrayList源码分析/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    Java集合干货——ArrayList源码分析
+                
+            </div>
+        </a>
+    
+    
+        <a href="/2017/12/23/用Python给头像加上圣诞帽/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">用Python给头像加上圣诞帽</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+
+</section>
+            
+                
+<aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/9420/04/02/《阿里感悟》如何在三年内成长为一名技术专家？/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/读书/">读书</a></p>
+                            <p class="item-title"><a href="/9420/04/02/《阿里感悟》如何在三年内成长为一名技术专家？/" class="title">【置顶】《阿里感悟》如何在三年内成长为一名技术专家？</a></p>
+                            <p class="item-date"><time datetime="9420-04-02T07:14:07.000Z" itemprop="datePublished">9420-04-02</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/03/21/远程通信的几种选择/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/远程通信/">远程通信</a></p>
+                            <p class="item-title"><a href="/2018/03/21/远程通信的几种选择/" class="title">远程通信的几种选择</a></p>
+                            <p class="item-date"><time datetime="2018-03-21T14:19:26.000Z" itemprop="datePublished">2018-03-21</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/03/17/Tomcat-性能调优/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/tomcat调优/">tomcat调优</a></p>
+                            <p class="item-title"><a href="/2018/03/17/Tomcat-性能调优/" class="title">Tomcat 性能调优</a></p>
+                            <p class="item-date"><time datetime="2018-03-17T14:53:21.000Z" itemprop="datePublished">2018-03-17</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/03/13/Map中的hash/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/hash/">hash</a></p>
+                            <p class="item-title"><a href="/2018/03/13/Map中的hash/" class="title">Map中的hash()</a></p>
+                            <p class="item-date"><time datetime="2018-03-13T11:08:46.000Z" itemprop="datePublished">2018-03-13</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/03/05/springboot集成swagger2，构建优雅的Restful-API/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/swagger/">swagger</a></p>
+                            <p class="item-title"><a href="/2018/03/05/springboot集成swagger2，构建优雅的Restful-API/" class="title">Spring Boot集成Swagger2，构建优雅的Restful API</a></p>
+                            <p class="item-date"><time datetime="2018-03-05T08:20:46.000Z" itemprop="datePublished">2018-03-05</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Ajax/">Ajax</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Elasticsearch/">Elasticsearch</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Js/">Js</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring-Boot/">Spring Boot</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/activemq/">activemq</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/algorithm/">algorithm</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/command/">command</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/docker/">docker</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/fetch/">fetch</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/hash/">hash</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/interview/">interview</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jsr303/">jsr303</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/kafka/">kafka</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/network/">network</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/python/">python</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/rabbitmq/">rabbitmq</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/redis/">redis</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/regex/">regex</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/spring/">spring</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/sql/">sql</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/swagger/">swagger</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/thymeleaf/">thymeleaf</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/tomcat调优/">tomcat调优</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/消息中间件/">消息中间件</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/读书/">读书</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/远程通信/">远程通信</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/集群/">集群</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/集群/分布式/">分布式</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/集群/分布式/云计算/">云计算</a><span class="category-list-count">1</span></li></ul></li></ul></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">归档</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/9420/04/">April 9420</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a><span class="archive-list-count">2</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签</h3>
+        <div class="widget">
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ajax/">Ajax</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Elasticsearch/">Elasticsearch</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JSP/">JSP</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Boot/">Spring Boot</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/fetch/">fetch</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hash/">hash</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jsr303/">jsr303</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/">linux</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/">mysql</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/">redis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring/">spring</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql/">sql</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/swagger/">swagger</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/thymeleaf/">thymeleaf</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat调优/">tomcat调优</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vim/">vim</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/一键评教/">一键评教</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/云计算/">云计算</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/分布式/">分布式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/正则表达式/">正则表达式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/消息中间件/">消息中间件</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/计算机网络/">计算机网络</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/读书/">读书</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/远程通信/">远程通信</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/集群/">集群</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/面试/">面试</a><span class="tag-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签云</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/Ajax/" style="font-size: 13.33px;">Ajax</a> <a href="/tags/Elasticsearch/" style="font-size: 10px;">Elasticsearch</a> <a href="/tags/JSP/" style="font-size: 10px;">JSP</a> <a href="/tags/Java/" style="font-size: 13.33px;">Java</a> <a href="/tags/Python/" style="font-size: 10px;">Python</a> <a href="/tags/Spring-Boot/" style="font-size: 16.67px;">Spring Boot</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/fetch/" style="font-size: 10px;">fetch</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/hash/" style="font-size: 10px;">hash</a> <a href="/tags/java/" style="font-size: 13.33px;">java</a> <a href="/tags/jsr303/" style="font-size: 10px;">jsr303</a> <a href="/tags/linux/" style="font-size: 13.33px;">linux</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/python/" style="font-size: 13.33px;">python</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a> <a href="/tags/shell/" style="font-size: 13.33px;">shell</a> <a href="/tags/spring/" style="font-size: 10px;">spring</a> <a href="/tags/sql/" style="font-size: 10px;">sql</a> <a href="/tags/swagger/" style="font-size: 10px;">swagger</a> <a href="/tags/thymeleaf/" style="font-size: 10px;">thymeleaf</a> <a href="/tags/tomcat/" style="font-size: 10px;">tomcat</a> <a href="/tags/tomcat调优/" style="font-size: 10px;">tomcat调优</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/一键评教/" style="font-size: 10px;">一键评教</a> <a href="/tags/云计算/" style="font-size: 10px;">云计算</a> <a href="/tags/分布式/" style="font-size: 10px;">分布式</a> <a href="/tags/正则表达式/" style="font-size: 10px;">正则表达式</a> <a href="/tags/消息中间件/" style="font-size: 20px;">消息中间件</a> <a href="/tags/算法/" style="font-size: 13.33px;">算法</a> <a href="/tags/计算机网络/" style="font-size: 10px;">计算机网络</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/远程通信/" style="font-size: 10px;">远程通信</a> <a href="/tags/集群/" style="font-size: 10px;">集群</a> <a href="/tags/面试/" style="font-size: 10px;">面试</a>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">友情链接(排名不分先后)</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a target="_blank" href="http://ifeve.com/">并发编程网</a>
+                    </li>
+                
+                    <li>
+                        <a target="_blank" href="http://www.sivan0222.cn">吴晓文</a>
+                    </li>
+                
+                    <li>
+                        <a target="_blank" href="http://www.rxdonny.com">唐仁鑫</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+
+            
+        </div>
+        <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<footer id="footer">
+	
+    <div class="outer">
+    	<a target="_blank" href="https://github.com/b2stry"><span class="fa-stack fa-lg">
+                                <i class="fa fa-github fa-stack-2x fa-inverse" style="color:#898d92"></i></span></a>
+        <div id="footer-info" class="inner">
+            Copyright&nbsp;&copy; 2018 <a href="https://github.com/B2stry" target="_blank">Shallow An</a>  &nbsp;&nbsp;<br><span id="busuanzi_container_site_pv" style="font-size:13px"> 
+  		pv: <span id="busuanzi_value_site_pv" style="font-size:10px"></span>
+	</span><br>&nbsp;&nbsp;いつからか好きになっていました<br>中心藏之，何日忘之<br><br>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="http://github.com/ppoffice" target="_blank">PPOffice</a>
+        </div>
+    </div>
+</footer>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?95a2d1c2cf767a8efae55252dd5e5de4";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+        
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+        <script type="text/x-mathjax-config">
+            MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
+</html>

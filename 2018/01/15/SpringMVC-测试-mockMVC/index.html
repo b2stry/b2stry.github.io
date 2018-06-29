@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <meta charset="utf-8">
+    
+    <title>SpringMVC 测试 mockMVC | 夏浅安のブログ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="SpringMVC测试框架基于RESTful风格的SpringMVC的测试，我们可以测试完整的Spring MVC流程，即从URL请求到控制器处理，再到视图渲染都可以测试。">
+<meta name="keywords" content="Spring Boot">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringMVC 测试 mockMVC">
+<meta property="og:url" content="http://github.com/b2stry/2018/01/15/SpringMVC-测试-mockMVC/index.html">
+<meta property="og:site_name" content="夏浅安のブログ">
+<meta property="og:description" content="SpringMVC测试框架基于RESTful风格的SpringMVC的测试，我们可以测试完整的Spring MVC流程，即从URL请求到控制器处理，再到视图渲染都可以测试。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1515952680688&di=cb9c4561ab693f1e5c55dffc8a9ddfb2&imgtype=0&src=http%3A%2F%2Fwww.greenmoonsoftware.com%2Fimages%2Fspring-boot-project-logo.png">
+<meta property="og:updated_time" content="2018-01-15T06:05:34.899Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SpringMVC 测试 mockMVC">
+<meta name="twitter:description" content="SpringMVC测试框架基于RESTful风格的SpringMVC的测试，我们可以测试完整的Spring MVC流程，即从URL请求到控制器处理，再到视图渲染都可以测试。">
+<meta name="twitter:image" content="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1515952680688&di=cb9c4561ab693f1e5c55dffc8a9ddfb2&imgtype=0&src=http%3A%2F%2Fwww.greenmoonsoftware.com%2Fimages%2Fspring-boot-project-logo.png">
+    
+
+    
+
+    
+        <link rel="icon" href="/images/yu.png" />
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+    
+        <script>
+var _hmt = _hmt || [];
+(function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?865692d8325f5ebc46f2007ac5a4f929";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+	
+})();
+</script>
+
+    
+
+
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+               
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/.">Home</a>
+                
+                    <a class="main-nav-link" href="/archives">Archives</a>
+                
+                    <a class="main-nav-link" href="/categories">Categories</a>
+                
+                    <a class="main-nav-link" href="/tags">Tags</a>
+                
+                    <a class="main-nav-link" href="/about">About</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/images/mianbao.png" />
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/.">Home</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">Archives</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">Categories</a></td>
+                
+                    <td><a class="main-nav-link" href="/tags">Tags</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">About</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/images/mianbao.png" />
+            <h2 id="name">ShallowAn</h2>
+            <h3 id="title">世界远比你想象的更精彩,<br>别放弃!</h3>
+            <span id="location"><i class="fa fa-map-marker"></i>中国, 长沙</span>
+            <a style="margin:20px 50px 10px" id="follow" target="_blank" href="https://github.com/b2stry/">关注</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                42
+                <span>文章</span>
+            </div>
+            <div class="article-info-block">
+                35
+                <span>标签</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="http://main.shallowan.cn" target="_blank" title="home" class=tooltip>
+                            <i class="fa fa-home"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="http://47.93.242.254:8888/mytwitter/" target="_blank" title="twitter" class=tooltip>
+                            <i class="fa fa-twitter"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://weibo.com/shallowAn" target="_blank" title="weibo" class=tooltip>
+                            <i class="fa fa-weibo"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://www.linkedin.com/in/%E9%9C%88-%E5%88%98-250b7b152/" target="_blank" title="linkedin" class=tooltip>
+                            <i class="fa fa-linkedin"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="javascript:window.open('http://www.shallowan.cn/imgrepo/wechatcode.png')" target="_blank" title="weixin" class=tooltip>
+                            <i class="fa fa-weixin"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://github.com/b2stry/" target="_blank" title="github" class=tooltip>
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+</aside>
+
+            
+            <section id="main"><article id="post-SpringMVC-测试-mockMVC" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+            
+	
+		<img src="https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=2161947716,2940818680&fm=27&gp=0.jpg" class="article-banner" />
+	
+
+
+
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+            SpringMVC 测试 mockMVC
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/2018/01/15/SpringMVC-测试-mockMVC/">
+            <time datetime="2018-01-15T05:53:44.000Z" itemprop="datePublished">2018-01-15</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/Spring-Boot/">Spring Boot</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Spring-Boot/">Spring Boot</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <h3 id="SpringMVC测试框架"><a href="#SpringMVC测试框架" class="headerlink" title="SpringMVC测试框架"></a>SpringMVC测试框架</h3><p>基于RESTful风格的SpringMVC的测试，我们可以测试完整的Spring MVC流程，即从URL请求到控制器处理，再到视图渲染都可以测试。<br><a id="more"></a></p>
+<h4 id="一-MockMvcBuilder"><a href="#一-MockMvcBuilder" class="headerlink" title="一 MockMvcBuilder"></a>一 MockMvcBuilder</h4><p>MockMvcBuilder是用来构造MockMvc的构造器，其主要有两个实现：StandaloneMockMvcBuilder和DefaultMockMvcBuilder，分别对应两种测试方式，即独立安装和集成Web环境测试（此种方式并不会集成真正的web环境，而是通过相应的Mock API进行模拟测试，无须启动服务器）。对于我们来说直接使用静态工厂MockMvcBuilders创建即可。</p>
+<h5 id="1-集成Web环境方式"><a href="#1-集成Web环境方式" class="headerlink" title="1.集成Web环境方式"></a>1.集成Web环境方式</h5><p>MockMvcBuilders.webAppContextSetup(WebApplicationContext context)：指定WebApplicationContext，将会从该上下文获取相应的控制器并得到相应的MockMvc；<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@RunWith</span>(SpringJUnit4ClassRunner.class)</div><div class="line"><span class="meta">@ContextConfiguration</span>(<span class="string">"classpath:config/IncotermsRestServiceTest-context.xml"</span>)</div><div class="line"><span class="meta">@WebAppConfiguration</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">IncotermsRestServiceTest</span> </span>&#123;</div><div class="line">    <span class="meta">@Autowired</span></div><div class="line">    <span class="keyword">private</span> WebApplicationContext wac;</div><div class="line">    <span class="keyword">private</span> MockMvc mockMvc;</div><div class="line">    <span class="meta">@Before</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setup</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.mockMvc = MockMvcBuilders.webAppContextSetup(<span class="keyword">this</span>.wac).build();   <span class="comment">//构造MockMvc</span></div><div class="line">    &#125;</div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>注意：</p>
+<p>1) @WebAppConfiguration：测试环境使用，用来表示测试环境使用的ApplicationContext将是WebApplicationContext类型的；value指定web应用的根；</p>
+<p>2) 通过@Autowired WebApplicationContext wac：注入web环境的ApplicationContext容器；</p>
+<p>3) 然后通过MockMvcBuilders.webAppContextSetup(wac).build()创建一个MockMvc进行测试；</p>
+<h5 id="2-独立测试方式"><a href="#2-独立测试方式" class="headerlink" title="2.独立测试方式"></a>2.独立测试方式</h5><p>MockMvcBuilders.standaloneSetup(Object… controllers)：通过参数指定一组控制器，这样就不需要从上下文获取了；<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PricingExportResultsRestServiceTest</span> </span>&#123;</div><div class="line">    <span class="meta">@InjectMocks</span></div><div class="line">    <span class="keyword">private</span> PricingExportResultsRestService pricingExportResultsRestService;</div><div class="line">    <span class="meta">@Mock</span></div><div class="line">    <span class="keyword">private</span> ExportRateScheduleService exportRateScheduleService;</div><div class="line">    <span class="meta">@Mock</span></div><div class="line">    <span class="keyword">private</span> PricingUrlProvider pricingUrlProvider;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> MockMvc mockMvc;</div><div class="line"></div><div class="line">    <span class="meta">@Before</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setup</span><span class="params">()</span> </span>&#123;</div><div class="line">        MockitoAnnotations.initMocks(<span class="keyword">this</span>);</div><div class="line">        mockMvc = MockMvcBuilders.standaloneSetup(pricingExportResultsRestService).build();  <span class="comment">//构造MockMvc</span></div><div class="line">    &#125;</div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>主要是两个步骤：<br>1) 首先自己创建相应的控制器，注入相应的依赖<br>2) 通过MockMvcBuilders.standaloneSetup模拟一个Mvc测试环境，通过build得到一个MockMvc</p>
+<h4 id="二-MockMvc"><a href="#二-MockMvc" class="headerlink" title="二 MockMvc"></a>二 MockMvc</h4><p>先看一个测试例子1：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">　　<span class="meta">@Test</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">createIncotermSuccess</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">    IncotermTo createdIncoterm = <span class="keyword">new</span> IncotermTo();</div><div class="line">    createdIncoterm.setId(<span class="keyword">new</span> IncotermId(UUID.fromString(<span class="string">"6305ff33-295e-11e5-ae37-54ee7534021a"</span>)));</div><div class="line">    createdIncoterm.setCode(<span class="string">"EXW"</span>);</div><div class="line">    createdIncoterm.setDescription(<span class="string">"code exw"</span>);</div><div class="line">    createdIncoterm.setLocationQualifier(LocationQualifier.DEPARTURE);</div><div class="line"></div><div class="line">    when(inventoryService.create(any(IncotermTo.class))).thenReturn(createdIncoterm);</div><div class="line"></div><div class="line">    mockMvc.perform(post(<span class="string">"/secured/resources/incoterms/create"</span>).accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)</div><div class="line">            .content(<span class="string">"&#123;\"code\" : \"EXW\", \"description\" : \"code exw\", \"locationQualifier\" : \"DEPARTURE\"&#125;"</span>.getBytes()))</div><div class="line">            <span class="comment">//.andDo(print())</span></div><div class="line">            .andExpect(status().isOk())</div><div class="line">            .andExpect(jsonPath(<span class="string">"id.value"</span>).exists())</div><div class="line">            .andExpect(jsonPath(<span class="string">"id.value"</span>).value(<span class="string">"6305ff33-295e-11e5-ae37-54ee7534021a"</span>))</div><div class="line">            .andExpect(jsonPath(<span class="string">"code"</span>).value(<span class="string">"EXW"</span>));</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<ul>
+<li>perform：执行一个RequestBuilder请求，会自动执行SpringMVC的流程并映射到相应的控制器执行处理；</li>
+<li>andExpect：添加ResultMatcher验证规则，验证控制器执行完成后结果是否正确；</li>
+<li>andDo：添加ResultHandler结果处理器，比如调试时打印结果到控制台；</li>
+<li>andReturn：最后返回相应的MvcResult；然后进行自定义验证/进行下一步的异步处理；</li>
+</ul>
+<p>看一个具体的例子2：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Test</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testView</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">    MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get(<span class="string">"/user/1"</span>))</div><div class="line">            .andExpect(MockMvcResultMatchers.view().name(<span class="string">"user/view"</span>))</div><div class="line">            .andExpect(MockMvcResultMatchers.model().attributeExists(<span class="string">"user"</span>))</div><div class="line">            .andDo(MockMvcResultHandlers.print())</div><div class="line">            .andReturn();</div><div class="line"></div><div class="line">    Assert.assertNotNull(result.getModelAndView().getModel().get(<span class="string">"user"</span>));</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>整个过程：<br>1) mockMvc.perform执行一个请求；<br>2) MockMvcRequestBuilders.get(“/user/1”)构造一个请求<br>3) ResultActions.andExpect添加执行完成后的断言<br>4) ResultActions.andDo添加一个结果处理器，表示要对结果做点什么事情，比如此处使用MockMvcResultHandlers.print()输出整个响应结果信息。<br>5) ResultActions.andReturn表示执行完成后返回相应的结果。</p>
+<p>整个测试过程非常有规律：<br>1) 准备测试环境<br>2) 通过MockMvc执行请求<br>3.1) 添加验证断言<br>3.2) 添加结果处理器<br>3.3) 得到MvcResult进行自定义断言/进行下一步的异步请求<br>4) 卸载测试环境</p>
+<h4 id="三-RequestBuilder-MockMvcRequestBuilders"><a href="#三-RequestBuilder-MockMvcRequestBuilders" class="headerlink" title="三 RequestBuilder/MockMvcRequestBuilders"></a>三 RequestBuilder/MockMvcRequestBuilders</h4><p>从名字可以看出，RequestBuilder用来构建请求的，其提供了一个方法buildRequest(ServletContext servletContext)用于构建MockHttpServletRequest；其主要有两个子类MockHttpServletRequestBuilder和MockMultipartHttpServletRequestBuilder（如文件上传使用），即用来Mock客户端请求需要的所有数据。</p>
+<h5 id="1-MockMvcRequestBuilders主要API"><a href="#1-MockMvcRequestBuilders主要API" class="headerlink" title="1.MockMvcRequestBuilders主要API"></a>1.MockMvcRequestBuilders主要API</h5><p>MockHttpServletRequestBuilder get(String urlTemplate, Object… urlVariables)：根据uri模板和uri变量值得到一个GET请求方式的MockHttpServletRequestBuilder；如get(/user/{id}, 1L)；</p>
+<p>MockHttpServletRequestBuilder post(String urlTemplate, Object… urlVariables)：同get类似，但是是POST方法；</p>
+<p>MockHttpServletRequestBuilder put(String urlTemplate, Object… urlVariables)：同get类似，但是是PUT方法；</p>
+<p>MockHttpServletRequestBuilder delete(String urlTemplate, Object… urlVariables) ：同get类似，但是是DELETE方法；</p>
+<p>MockHttpServletRequestBuilder options(String urlTemplate, Object… urlVariables)：同get类似，但是是OPTIONS方法；</p>
+<p>MockHttpServletRequestBuilder request(HttpMethod httpMethod, String urlTemplate, Object… urlVariables)： 提供自己的Http请求方法及uri模板和uri变量，如上API都是委托给这个API；</p>
+<p>MockMultipartHttpServletRequestBuilder fileUpload(String urlTemplate, Object… urlVariables)：提供文件上传方式的请求，得到MockMultipartHttpServletRequestBuilder；</p>
+<p>RequestBuilder asyncDispatch(final MvcResult mvcResult)：创建一个从启动异步处理的请求的MvcResult进行异步分派的RequestBuilder；</p>
+<h5 id="2-MockHttpServletRequestBuilder和MockMultipartHttpServletRequestBuilder-API"><a href="#2-MockHttpServletRequestBuilder和MockMultipartHttpServletRequestBuilder-API" class="headerlink" title="2.MockHttpServletRequestBuilder和MockMultipartHttpServletRequestBuilder API"></a>2.MockHttpServletRequestBuilder和MockMultipartHttpServletRequestBuilder API</h5><h6 id="1-MockHttpServletRequestBuilder-API"><a href="#1-MockHttpServletRequestBuilder-API" class="headerlink" title="(1)MockHttpServletRequestBuilder API"></a>(1)MockHttpServletRequestBuilder API</h6><p>MockHttpServletRequestBuilder header(String name, Object… values)/MockHttpServletRequestBuilder headers(HttpHeaders httpHeaders)：添加头信息；</p>
+<p>MockHttpServletRequestBuilder contentType(MediaType mediaType)：指定请求的contentType头信息；</p>
+<p>MockHttpServletRequestBuilder accept(MediaType… mediaTypes)/MockHttpServletRequestBuilder accept(String… mediaTypes)：指定请求的Accept头信息；</p>
+<p>MockHttpServletRequestBuilder content(byte[] content)/MockHttpServletRequestBuilder content(String content)：指定请求Body体内容；</p>
+<p>MockHttpServletRequestBuilder cookie(Cookie… cookies)：指定请求的Cookie；</p>
+<p>MockHttpServletRequestBuilder locale(Locale locale)：指定请求的Locale；</p>
+<p>MockHttpServletRequestBuilder characterEncoding(String encoding)：指定请求字符编码；</p>
+<p>MockHttpServletRequestBuilder requestAttr(String name, Object value) ：设置请求属性数据；</p>
+<p>MockHttpServletRequestBuilder sessionAttr(String name, Object value)/MockHttpServletRequestBuilder sessionAttrs(Map<string, object=""> sessionAttributes)：设置请求session属性数据；</string,></p>
+<p>MockHttpServletRequestBuilder flashAttr(String name, Object value)/MockHttpServletRequestBuilder flashAttrs(Map<string, object=""> flashAttributes)：指定请求的flash信息，比如重定向后的属性信息；</string,></p>
+<p>MockHttpServletRequestBuilder session(MockHttpSession session) ：指定请求的Session；</p>
+<p>MockHttpServletRequestBuilder principal(Principal principal) ：指定请求的Principal；</p>
+<p>MockHttpServletRequestBuilder contextPath(String contextPath) ：指定请求的上下文路径，必须以“/”开头，且不能以“/”结尾；</p>
+<p>MockHttpServletRequestBuilder pathInfo(String pathInfo) ：请求的路径信息，必须以“/”开头；</p>
+<p>MockHttpServletRequestBuilder secure(boolean secure)：请求是否使用安全通道；</p>
+<p>MockHttpServletRequestBuilder with(RequestPostProcessor postProcessor)：请求的后处理器，用于自定义一些请求处理的扩展点；</p>
+<h6 id="2-MockMultipartHttpServletRequestBuilder继承自MockHttpServletRequestBuilder，又提供了如下API"><a href="#2-MockMultipartHttpServletRequestBuilder继承自MockHttpServletRequestBuilder，又提供了如下API" class="headerlink" title="(2)MockMultipartHttpServletRequestBuilder继承自MockHttpServletRequestBuilder，又提供了如下API"></a>(2)MockMultipartHttpServletRequestBuilder继承自MockHttpServletRequestBuilder，又提供了如下API</h6><p>MockMultipartHttpServletRequestBuilder file(String name, byte[] content)/MockMultipartHttpServletRequestBuilder file(MockMultipartFile file)：指定要上传的文件；</p>
+<h4 id="四-ResultActions"><a href="#四-ResultActions" class="headerlink" title="四 ResultActions"></a>四 ResultActions</h4><p>调用MockMvc.perform(RequestBuilder requestBuilder)后将得到ResultActions，通过ResultActions完成如下三件事：</p>
+<ul>
+<li>ResultActions andExpect(ResultMatcher matcher) ：添加验证断言来判断执行请求后的结果是否是预期的；</li>
+<li>ResultActions andDo(ResultHandler handler) ：添加结果处理器，用于对验证成功后执行的动作，如输出下请求/结果信息用于调试；</li>
+<li>MvcResult andReturn() ：返回验证成功后的MvcResult；用于自定义验证/下一步的异步处理；</li>
+</ul>
+<h4 id="五-ResultMatcher-MockMvcResultMatchers"><a href="#五-ResultMatcher-MockMvcResultMatchers" class="headerlink" title="五 ResultMatcher/MockMvcResultMatchers"></a>五 ResultMatcher/MockMvcResultMatchers</h4><p>1) ResultMatcher用来匹配执行完请求后的结果验证，其就一个match(MvcResult result)断言方法，如果匹配失败将抛出相应的异常；spring mvc测试框架提供了很多<strong><em>ResultMatchers来满足测试需求。注意这些</em></strong>ResultMatchers并不是ResultMatcher的子类，而是返回ResultMatcher实例的。Spring mvc测试框架为了测试方便提供了MockMvcResultMatchers静态工厂方法方便操作；</p>
+<p>2) 具体的API如下：<br>HandlerResultMatchers handler()：请求的Handler验证器，比如验证处理器类型/方法名；此处的Handler其实就是处理请求的控制器；</p>
+<p>RequestResultMatchers request()：得到RequestResultMatchers验证器；</p>
+<p>ModelResultMatchers model()：得到模型验证器；</p>
+<p>ViewResultMatchers view()：得到视图验证器；</p>
+<p>FlashAttributeResultMatchers flash()：得到Flash属性验证；</p>
+<p>StatusResultMatchers status()：得到响应状态验证器；</p>
+<p>HeaderResultMatchers header()：得到响应Header验证器；</p>
+<p>CookieResultMatchers cookie()：得到响应Cookie验证器；</p>
+<p>ContentResultMatchers content()：得到响应内容验证器；</p>
+<p>JsonPathResultMatchers jsonPath(String expression, Object … args)/ResultMatcher jsonPath(String expression, Matcher matcher)：得到Json表达式验证器；</p>
+<p>XpathResultMatchers xpath(String expression, Object… args)/XpathResultMatchers xpath(String expression, Map<string, string=""> namespaces, Object… args)：得到Xpath表达式验证器；</string,></p>
+<p>ResultMatcher forwardedUrl(final String expectedUrl)：验证处理完请求后转发的url（绝对匹配）；</p>
+<p>ResultMatcher forwardedUrlPattern(final String urlPattern)：验证处理完请求后转发的url（Ant风格模式匹配，@since spring4）；</p>
+<p>ResultMatcher redirectedUrl(final String expectedUrl)：验证处理完请求后重定向的url（绝对匹配）；</p>
+<p>ResultMatcher redirectedUrlPattern(final String expectedUrl)：验证处理完请求后重定向的url（Ant风格模式匹配，@since spring4）；</p>
+<h4 id="六-一些常用的测试"><a href="#六-一些常用的测试" class="headerlink" title="六 一些常用的测试"></a>六 一些常用的测试</h4><h5 id="1-测试普通控制器"><a href="#1-测试普通控制器" class="headerlink" title="1.测试普通控制器"></a>1.测试普通控制器</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">mockMvc.perform(get(<span class="string">"/user/&#123;id&#125;"</span>, <span class="number">1</span>)) <span class="comment">//执行请求</span></div><div class="line">            .andExpect(model().attributeExists(<span class="string">"user"</span>)) <span class="comment">//验证存储模型数据</span></div><div class="line">            .andExpect(view().name(<span class="string">"user/view"</span>)) <span class="comment">//验证viewName</span></div><div class="line">            .andExpect(forwardedUrl(<span class="string">"/WEB-INF/jsp/user/view.jsp"</span>))<span class="comment">//验证视图渲染时forward到的jsp</span></div><div class="line">            .andExpect(status().isOk())<span class="comment">//验证状态码</span></div><div class="line">            .andDo(print()); <span class="comment">//输出MvcResult到控制台</span></div></pre></td></tr></table></figure>
+<h5 id="2-得到MvcResult自定义验证"><a href="#2-得到MvcResult自定义验证" class="headerlink" title="2.得到MvcResult自定义验证"></a>2.得到MvcResult自定义验证</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">MvcResult result = mockMvc.perform(get(<span class="string">"/user/&#123;id&#125;"</span>, <span class="number">1</span>))<span class="comment">//执行请求</span></div><div class="line">        .andReturn(); <span class="comment">//返回MvcResult</span></div><div class="line">Assert.assertNotNull(result.getModelAndView().getModel().get(<span class="string">"user"</span>)); <span class="comment">//自定义断言</span></div></pre></td></tr></table></figure>
+<h5 id="3-验证请求参数绑定到模型数据及Flash属性"><a href="#3-验证请求参数绑定到模型数据及Flash属性" class="headerlink" title="3.验证请求参数绑定到模型数据及Flash属性"></a>3.验证请求参数绑定到模型数据及Flash属性</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">mockMvc.perform(post(<span class="string">"/user"</span>).param(<span class="string">"name"</span>, <span class="string">"zhang"</span>)) <span class="comment">//执行传递参数的POST请求(也可以post("/user?name=zhang"))</span></div><div class="line">            .andExpect(handler().handlerType(UserController.class)) <span class="comment">//验证执行的控制器类型</span></div><div class="line">            .andExpect(handler().methodName(<span class="string">"create"</span>)) <span class="comment">//验证执行的控制器方法名</span></div><div class="line">            .andExpect(model().hasNoErrors()) <span class="comment">//验证页面没有错误</span></div><div class="line">            .andExpect(flash().attributeExists(<span class="string">"success"</span>)) <span class="comment">//验证存在flash属性</span></div><div class="line">            .andExpect(view().name(<span class="string">"redirect:/user"</span>)); <span class="comment">//验证视图</span></div></pre></td></tr></table></figure>
+<h5 id="4-文件上传"><a href="#4-文件上传" class="headerlink" title="4.文件上传"></a>4.文件上传</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">byte</span>[] bytes = <span class="keyword">new</span> <span class="keyword">byte</span>[] &#123;<span class="number">1</span>, <span class="number">2</span>&#125;;</div><div class="line">mockMvc.perform(fileUpload(<span class="string">"/user/&#123;id&#125;/icon"</span>, <span class="number">1L</span>).file(<span class="string">"icon"</span>, bytes)) <span class="comment">//执行文件上传</span></div><div class="line">        .andExpect(model().attribute(<span class="string">"icon"</span>, bytes)) <span class="comment">//验证属性相等性</span></div><div class="line">        .andExpect(view().name(<span class="string">"success"</span>)); <span class="comment">//验证视图</span></div></pre></td></tr></table></figure>
+<h5 id="5-JSON请求-响应验证"><a href="#5-JSON请求-响应验证" class="headerlink" title="5.JSON请求/响应验证"></a>5.JSON请求/响应验证</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">String requestBody = <span class="string">"&#123;\"id\":1, \"name\":\"zhang\"&#125;"</span>;</div><div class="line">    mockMvc.perform(post(<span class="string">"/user"</span>)</div><div class="line">            .contentType(MediaType.APPLICATION_JSON).content(requestBody)</div><div class="line">            .accept(MediaType.APPLICATION_JSON)) <span class="comment">//执行请求</span></div><div class="line">            .andExpect(content().contentType(MediaType.APPLICATION_JSON)) <span class="comment">//验证响应contentType</span></div><div class="line">            .andExpect(jsonPath(<span class="string">"$.id"</span>).value(<span class="number">1</span>)); <span class="comment">//使用Json path验证JSON 请参考http://goessner.net/articles/JsonPath/</span></div><div class="line"></div><div class="line">    String errorBody = <span class="string">"&#123;id:1, name:zhang&#125;"</span>;</div><div class="line">    MvcResult result = mockMvc.perform(post(<span class="string">"/user"</span>)</div><div class="line">            .contentType(MediaType.APPLICATION_JSON).content(errorBody)</div><div class="line">            .accept(MediaType.APPLICATION_JSON)) <span class="comment">//执行请求</span></div><div class="line">            .andExpect(status().isBadRequest()) <span class="comment">//400错误请求</span></div><div class="line">            .andReturn();</div><div class="line"></div><div class="line">    Assert.assertTrue(HttpMessageNotReadableException.class.isAssignableFrom(result.getResolvedException().getClass()));<span class="comment">//错误的请求内容体</span></div></pre></td></tr></table></figure>
+<h5 id="6-异步测试"><a href="#6-异步测试" class="headerlink" title="6.异步测试"></a>6.异步测试</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">　　<span class="comment">//Callable</span></div><div class="line">MvcResult result = mockMvc.perform(get(<span class="string">"/user/async1?id=1&amp;name=zhang"</span>)) <span class="comment">//执行请求</span></div><div class="line">        .andExpect(request().asyncStarted())</div><div class="line">        .andExpect(request().asyncResult(CoreMatchers.instanceOf(User.class))) <span class="comment">//默认会等10秒超时</span></div><div class="line">        .andReturn();</div><div class="line"></div><div class="line">mockMvc.perform(asyncDispatch(result))</div><div class="line">        .andExpect(status().isOk())</div><div class="line">        .andExpect(content().contentType(MediaType.APPLICATION_JSON))</div><div class="line">        .andExpect(jsonPath(<span class="string">"$.id"</span>).value(<span class="number">1</span>));</div></pre></td></tr></table></figure>
+<h5 id="7-全局配置"><a href="#7-全局配置" class="headerlink" title="7.全局配置"></a>7.全局配置</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">mockMvc = webAppContextSetup(wac)</div><div class="line">            .defaultRequest(get(<span class="string">"/user/1"</span>).requestAttr(<span class="string">"default"</span>, <span class="keyword">true</span>)) <span class="comment">//默认请求 如果其是Mergeable类型的，会自动合并的哦mockMvc.perform中的RequestBuilder</span></div><div class="line">            .alwaysDo(print())  <span class="comment">//默认每次执行请求后都做的动作</span></div><div class="line">            .alwaysExpect(request().attribute(<span class="string">"default"</span>, <span class="keyword">true</span>)) <span class="comment">//默认每次执行后进行验证的断言</span></div><div class="line">            .build();</div><div class="line"></div><div class="line">    mockMvc.perform(get(<span class="string">"/user/1"</span>))</div><div class="line">            .andExpect(model().attributeExists(<span class="string">"user"</span>));</div></pre></td></tr></table></figure>
+<blockquote>
+<p>本文转载至 李月云博主的博客园，地址：<a href="http://www.cnblogs.com/lyy-2016/p/6122144.html" target="_blank" rel="external">http://www.cnblogs.com/lyy-2016/p/6122144.html</a></p>
+</blockquote>
+
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+
+</div>
+
+    <a data-url="http://github.com/b2stry/2018/01/15/SpringMVC-测试-mockMVC/" data-id="cjizjt0g0000wuoqev8b0woz1" class="article-share-link"><i class="fa fa-share"></i>分享</a>
+<script>
+    (function ($) {
+        // Prevent duplicate binding
+        if (typeof(__SHARE_BUTTON_BINDED__) === 'undefined' || !__SHARE_BUTTON_BINDED__) {
+            __SHARE_BUTTON_BINDED__ = true;
+        } else {
+            return;
+        }
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="fa fa-twitter article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="fa fa-facebook article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="fa fa-pinterest article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="fa fa-google article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+            
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2018/01/15/消息队列之kafka/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    消息队列之Kafka
+                
+            </div>
+        </a>
+    
+    
+        <a href="/2018/01/14/慕课网-Spring-Boot技术栈博客企业前后端-开篇/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">慕课网---Spring Boot企业级博客系统实战(开篇)</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+
+</section>
+            
+                
+<aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/9420/04/02/《阿里感悟》如何在三年内成长为一名技术专家？/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/读书/">读书</a></p>
+                            <p class="item-title"><a href="/9420/04/02/《阿里感悟》如何在三年内成长为一名技术专家？/" class="title">【置顶】《阿里感悟》如何在三年内成长为一名技术专家？</a></p>
+                            <p class="item-date"><time datetime="9420-04-02T07:14:07.000Z" itemprop="datePublished">9420-04-02</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/03/21/远程通信的几种选择/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/远程通信/">远程通信</a></p>
+                            <p class="item-title"><a href="/2018/03/21/远程通信的几种选择/" class="title">远程通信的几种选择</a></p>
+                            <p class="item-date"><time datetime="2018-03-21T14:19:26.000Z" itemprop="datePublished">2018-03-21</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/03/17/Tomcat-性能调优/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/tomcat调优/">tomcat调优</a></p>
+                            <p class="item-title"><a href="/2018/03/17/Tomcat-性能调优/" class="title">Tomcat 性能调优</a></p>
+                            <p class="item-date"><time datetime="2018-03-17T14:53:21.000Z" itemprop="datePublished">2018-03-17</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/03/13/Map中的hash/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/hash/">hash</a></p>
+                            <p class="item-title"><a href="/2018/03/13/Map中的hash/" class="title">Map中的hash()</a></p>
+                            <p class="item-date"><time datetime="2018-03-13T11:08:46.000Z" itemprop="datePublished">2018-03-13</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/03/05/springboot集成swagger2，构建优雅的Restful-API/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/swagger/">swagger</a></p>
+                            <p class="item-title"><a href="/2018/03/05/springboot集成swagger2，构建优雅的Restful-API/" class="title">Spring Boot集成Swagger2，构建优雅的Restful API</a></p>
+                            <p class="item-date"><time datetime="2018-03-05T08:20:46.000Z" itemprop="datePublished">2018-03-05</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Ajax/">Ajax</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Elasticsearch/">Elasticsearch</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Js/">Js</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring-Boot/">Spring Boot</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/activemq/">activemq</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/algorithm/">algorithm</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/command/">command</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/docker/">docker</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/fetch/">fetch</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/hash/">hash</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/interview/">interview</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jsr303/">jsr303</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/kafka/">kafka</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/network/">network</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/python/">python</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/rabbitmq/">rabbitmq</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/redis/">redis</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/regex/">regex</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/spring/">spring</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/sql/">sql</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/swagger/">swagger</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/thymeleaf/">thymeleaf</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/tomcat调优/">tomcat调优</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/消息中间件/">消息中间件</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/读书/">读书</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/远程通信/">远程通信</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/集群/">集群</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/集群/分布式/">分布式</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/集群/分布式/云计算/">云计算</a><span class="category-list-count">1</span></li></ul></li></ul></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">归档</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/9420/04/">April 9420</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a><span class="archive-list-count">2</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签</h3>
+        <div class="widget">
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ajax/">Ajax</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Elasticsearch/">Elasticsearch</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JSP/">JSP</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Boot/">Spring Boot</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/fetch/">fetch</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hash/">hash</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jsr303/">jsr303</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/">linux</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/">mysql</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/">redis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring/">spring</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql/">sql</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/swagger/">swagger</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/thymeleaf/">thymeleaf</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat调优/">tomcat调优</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vim/">vim</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/一键评教/">一键评教</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/云计算/">云计算</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/分布式/">分布式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/正则表达式/">正则表达式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/消息中间件/">消息中间件</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/计算机网络/">计算机网络</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/读书/">读书</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/远程通信/">远程通信</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/集群/">集群</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/面试/">面试</a><span class="tag-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签云</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/Ajax/" style="font-size: 13.33px;">Ajax</a> <a href="/tags/Elasticsearch/" style="font-size: 10px;">Elasticsearch</a> <a href="/tags/JSP/" style="font-size: 10px;">JSP</a> <a href="/tags/Java/" style="font-size: 13.33px;">Java</a> <a href="/tags/Python/" style="font-size: 10px;">Python</a> <a href="/tags/Spring-Boot/" style="font-size: 16.67px;">Spring Boot</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/fetch/" style="font-size: 10px;">fetch</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/hash/" style="font-size: 10px;">hash</a> <a href="/tags/java/" style="font-size: 13.33px;">java</a> <a href="/tags/jsr303/" style="font-size: 10px;">jsr303</a> <a href="/tags/linux/" style="font-size: 13.33px;">linux</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/python/" style="font-size: 13.33px;">python</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a> <a href="/tags/shell/" style="font-size: 13.33px;">shell</a> <a href="/tags/spring/" style="font-size: 10px;">spring</a> <a href="/tags/sql/" style="font-size: 10px;">sql</a> <a href="/tags/swagger/" style="font-size: 10px;">swagger</a> <a href="/tags/thymeleaf/" style="font-size: 10px;">thymeleaf</a> <a href="/tags/tomcat/" style="font-size: 10px;">tomcat</a> <a href="/tags/tomcat调优/" style="font-size: 10px;">tomcat调优</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/一键评教/" style="font-size: 10px;">一键评教</a> <a href="/tags/云计算/" style="font-size: 10px;">云计算</a> <a href="/tags/分布式/" style="font-size: 10px;">分布式</a> <a href="/tags/正则表达式/" style="font-size: 10px;">正则表达式</a> <a href="/tags/消息中间件/" style="font-size: 20px;">消息中间件</a> <a href="/tags/算法/" style="font-size: 13.33px;">算法</a> <a href="/tags/计算机网络/" style="font-size: 10px;">计算机网络</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/远程通信/" style="font-size: 10px;">远程通信</a> <a href="/tags/集群/" style="font-size: 10px;">集群</a> <a href="/tags/面试/" style="font-size: 10px;">面试</a>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">友情链接(排名不分先后)</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a target="_blank" href="http://ifeve.com/">并发编程网</a>
+                    </li>
+                
+                    <li>
+                        <a target="_blank" href="http://www.sivan0222.cn">吴晓文</a>
+                    </li>
+                
+                    <li>
+                        <a target="_blank" href="http://www.rxdonny.com">唐仁鑫</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+
+            
+        </div>
+        <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<footer id="footer">
+	
+    <div class="outer">
+    	<a target="_blank" href="https://github.com/b2stry"><span class="fa-stack fa-lg">
+                                <i class="fa fa-github fa-stack-2x fa-inverse" style="color:#898d92"></i></span></a>
+        <div id="footer-info" class="inner">
+            Copyright&nbsp;&copy; 2018 <a href="https://github.com/B2stry" target="_blank">Shallow An</a>  &nbsp;&nbsp;<br><span id="busuanzi_container_site_pv" style="font-size:13px"> 
+  		pv: <span id="busuanzi_value_site_pv" style="font-size:10px"></span>
+	</span><br>&nbsp;&nbsp;いつからか好きになっていました<br>中心藏之，何日忘之<br><br>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="http://github.com/ppoffice" target="_blank">PPOffice</a>
+        </div>
+    </div>
+</footer>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?95a2d1c2cf767a8efae55252dd5e5de4";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+        
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+        <script type="text/x-mathjax-config">
+            MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
+</html>
