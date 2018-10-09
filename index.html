@@ -169,11 +169,11 @@ var _hmt = _hmt || [];
         </div>
         <div class="article-info profile-block">
             <div class="article-info-block">
-                44
+                45
                 <span>文章</span>
             </div>
             <div class="article-info-block">
-                37
+                38
                 <span>标签</span>
             </div>
         </div>
@@ -286,7 +286,221 @@ var _hmt = _hmt || [];
 
 </div>
 
-    <a data-url="http://github.com/b2stry/9420/04/02/《阿里感悟》如何在三年内成长为一名技术专家？/" data-id="cjkif3eoh001hr0qeu7qcytv7" class="article-share-link"><i class="fa fa-share"></i>分享</a>
+    <a data-url="http://github.com/b2stry/9420/04/02/《阿里感悟》如何在三年内成长为一名技术专家？/" data-id="cjn11yq3a001hqsqe9opsh7se" class="article-share-link"><i class="fa fa-share"></i>分享</a>
+<script>
+    (function ($) {
+        // Prevent duplicate binding
+        if (typeof(__SHARE_BUTTON_BINDED__) === 'undefined' || !__SHARE_BUTTON_BINDED__) {
+            __SHARE_BUTTON_BINDED__ = true;
+        } else {
+            return;
+        }
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="fa fa-twitter article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="fa fa-facebook article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="fa fa-pinterest article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="fa fa-google article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+            
+    
+
+        </footer>
+    </div>
+    
+</article>
+
+
+
+    <article id="post-Quartz" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 itemprop="name">
+            <a class="article-title" href="/2018/08/08/Quartz/">Quartz</a>
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/2018/08/08/Quartz/">
+            <time datetime="2018-08-08T12:06:28.000Z" itemprop="datePublished">2018-08-08</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/Quartz/">Quartz</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Quartz/">Quartz</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <h3 id="一、分类"><a href="#一、分类" class="headerlink" title="一、分类"></a>一、分类</h3><blockquote>
+<p>从实现的技术上来分，主要有三种：</p>
+</blockquote>
+<p>  1) <code>Java</code>自带的<code>java.util.Timer</code>类，这个类允许调度一个<code>java.util.TimerTask</code>任务。使用这种方式可以让程序按照某一个周期执行，但不能在指定时间运行。一般用的较少。</p>
+<p>  2) 使用<code>Quartz</code>，这是一个功能比较强大的的调度器，可以让程序在指定时间执行，也可以按照某一个周期执行，配置起来会稍微复杂一些。</p>
+<p>  3) <code>Spring3.0</code>以后，<code>Spring</code>官方自主开发了一款定时任务工具–<code>Spring Task</code>，可以将它看作一个轻量级的<code>Quartz</code>，而且使用起来很简单，除了<code>Spring</code>相关的包外不需要额外的包，而且支持<code>注解</code>和<code>XML配置</code>两种形式。</p>
+<h3 id="二、Quartz和Spring-Task对比"><a href="#二、Quartz和Spring-Task对比" class="headerlink" title="二、Quartz和Spring Task对比"></a>二、Quartz和Spring Task对比</h3><ol>
+<li><p>实现：<code>Task</code>注解实现方式，比较简单。<code>Quartz</code>需要手动配置<code>Jobs</code>。</p>
+</li>
+<li><p>任务执行：<code>Task</code>默认单线程串行执行任务，多任务时若某个任务执行时间过长，后续任务会无法及时执行。<code>Quartz</code>采用多线程，无这个问题。</p>
+</li>
+<li><p>调度：<code>Task</code>采用顺序执行，若当前调度占用时间过长，下一个调度无法及时执行；<code>Quartz</code>采用异步，下一个调度时间到达时，会另一个线程执行调度，不会发生阻塞问题。</p>
+</li>
+<li><p>部署：<code>Quartz</code>可以采用集群方式，分布式部署到多台机器，分配执行定时任务。</p>
+</li>
+</ol>
+<h3 id="三、Quartz"><a href="#三、Quartz" class="headerlink" title="三、Quartz"></a>三、Quartz</h3><p><code>Quartz</code>最核心的三个概念分别是： 任务(<code>Job</code>)、触发器(<code>Trigger</code>)和调度器(<code>Scheduler</code>)。</p>
+<h4 id="Job-amp-JobDetail"><a href="#Job-amp-JobDetail" class="headerlink" title="Job&amp;JobDetail"></a>Job&amp;JobDetail</h4><p><code>Job</code>定义：实现业务逻辑的任务接口，<code>Job</code>接口非常容易实现的，只有一个<code>execute</code>方法，在里面编写业务逻辑。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Job</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">execute</span><span class="params">(JobExecutionContext context)</span> <span class="keyword">throws</span> JobExcutionException</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>自定义<code>Job</code>实现类：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloJob</span> <span class="keyword">implements</span> <span class="title">Job</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">execute</span><span class="params">(JobExecutionContext jobExecutionContext)</span> <span class="keyword">throws</span> JobExecutionException </span>&#123;</div><div class="line">        <span class="comment">// 打印当前的执行时间，格式为2018-08-08 08:08:08</span></div><div class="line">        SimpleDateFormat sdf = <span class="keyword">new</span> SimpleDateFormat(<span class="string">"yyyy-MM-dd HH:mm:ss"</span>);</div><div class="line">        System.out.println(<span class="string">"Current Exec Time is:"</span> + sdf.format(System.currentTimeMillis()));</div><div class="line">        <span class="comment">//编写具体的业务逻辑</span></div><div class="line">        System.out.println(<span class="string">"Hello World!"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><code>Job</code>实例在<code>Quartz</code>中的生命周期：每次调度器执行<code>job</code>时，它在调用<code>execute</code>方法前会创建一个新的<code>job</code>实例。当调用完成后，<code>job</code>对象实例会被释放，释放的实例会被垃圾回收机制回收。</p>
+<p><code>JobDetail</code>用来存储特定<code>Job</code>实例的状态信息，调度器需要借助<code>JobDetail</code>对象来添加<code>Job</code>实例。简单来说就是用来绑定<code>Job</code>，会携带一些<code>Job</code>没有携带但又需要的信息。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//创建一个JobDetail实例，将该实例与HelloJob Class绑定</span></div><div class="line">JobDetail jobDetail = JobBuilder.newJob(HelloJob.class)</div><div class="line">                                .withIdentity(<span class="string">"myJob"</span>, <span class="string">"group1"</span>)</div><div class="line">                                .build();</div></pre></td></tr></table></figure></p>
+<h4 id="Trigger"><a href="#Trigger" class="headerlink" title="Trigger"></a>Trigger</h4><p><code>Trigger</code>是什么？用来告诉调度程序 <code>Job</code>什么时候触发，即<code>Trigger</code>对象是用来触发执行Job的。</p>
+<p><code>Trigger</code>主要分为两类：<code>SimpleTrigger</code>和<code>CronTrigger</code>。</p>
+<p><code>SimpleTrigger</code>的作用：在一个指定时间段内执行一次作业任务或是在指定的时间间隔内多次执行作业任务。</p>
+<p><code>CronTrigger</code>的作用：基于日历的作业调度器，而不是像<code>SimpleTrigger</code>那样精确指定间隔时间，比<code>SimpleTrigger</code>更常用。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//创建一个Trigger实例，定义该job立即执行，并且每隔两秒钟执行一次</span></div><div class="line">Trigger trigger = TriggerBuilder.newTrigger()</div><div class="line">                                .withIdentity(<span class="string">"myTrigger"</span>, <span class="string">"group1"</span>)</div><div class="line">                                .startNow()</div><div class="line">                                .withSchedule(CronScheduleBuilder.cronSchedule(<span class="string">"0/2 * * * * ? "</span>))</div><div class="line">                                .build();</div></pre></td></tr></table></figure>
+<h5 id="cron表达式"><a href="#cron表达式" class="headerlink" title="cron表达式"></a>cron表达式</h5><p><code>cron表达式</code>的格式如下：</p>
+<blockquote>
+<p>[秒] [分] [时] [日期（具体哪天）] [月] [星期]</p>
+</blockquote>
+<p>在<code>spring 4.x</code>中已经不支持<code>7</code>个参数的<code>cron表达式</code>了，要求必须是<code>6</code>个参数。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">字  段</th>
+<th style="text-align:left">是否必填</th>
+<th style="text-align:left">允许值和允许特殊字符</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">秒</td>
+<td style="text-align:left">是</td>
+<td style="text-align:left">允许的值范围是<code>0-59</code>，支持的特殊符号包括 <code>,</code> <code>-</code> <code>*</code> <code>/</code>，<code>,</code>表示特定的某一秒才会触发任务，<code>-</code>表示一段时间内会触发任务，<code>*</code>表示每一秒都会触发，<code>/</code>表示从哪一个时刻开始，每隔多长时间触发一次任务。</td>
+</tr>
+<tr>
+<td style="text-align:left">分</td>
+<td style="text-align:left">是</td>
+<td style="text-align:left">允许的值范围是<code>0-59</code>，支持的特殊符号和秒一样。</td>
+</tr>
+<tr>
+<td style="text-align:left">时</td>
+<td style="text-align:left">是</td>
+<td style="text-align:left">允许的值范围是<code>0-23</code>，支持的特殊符号和秒一样。</td>
+</tr>
+<tr>
+<td style="text-align:left">日期</td>
+<td style="text-align:left">是</td>
+<td style="text-align:left">允许的值范围是<code>1-31</code>，支持的特殊符号相比秒多了<code>?</code>，表示与<code>{星期}</code>互斥，即意味着若明确指定<code>{星期}</code>触发，则表示<code>{日期}</code>无意义，以免引起冲突和混乱。</td>
+</tr>
+<tr>
+<td style="text-align:left">月</td>
+<td style="text-align:left">是</td>
+<td style="text-align:left">允许的值范围是<code>1-12(JAN-DEC)</code>，支持的特殊符号与秒一样。</td>
+</tr>
+<tr>
+<td style="text-align:left">星期</td>
+<td style="text-align:left">是</td>
+<td style="text-align:left">允许值范围是<code>1~7(SUN-SAT)</code>，<code>1</code>代表星期天（一个星期的第一天），以此类推，<code>7</code>代表星期六，支持的符号相比秒多了<code>?</code>，表达的含义是与<code>{日期}</code>互斥，即意味着若明确指定<code>{日期}</code>触发，则表示<code>{星期}</code>无意义。</td>
+</tr>
+</tbody>
+</table>
+<p><code>cron</code>表达式举例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">30 * * * * ?              每分钟的第30秒触发一次任务</div><div class="line"></div><div class="line">0 0 10,14,16 * * ?        每天上午10点，下午2点，4点 </div><div class="line"></div><div class="line">0 15 10 ? * *             每天10点15分触发</div><div class="line"></div><div class="line">0 0/5 14 * * ?            每天下午的2点到2点59分(整点开始，每隔5分触发)</div><div class="line"></div><div class="line">0 12 10 ? * MON-FRI       从周一到周五每天上午10点15分触发</div></pre></td></tr></table></figure></p>
+<h4 id="Scheduler"><a href="#Scheduler" class="headerlink" title="Scheduler"></a>Scheduler</h4><p>调度器是用来定期定频率执行任务的。<br>所有的<code>Scheduler</code>实例是由<code>SchedulerFactory</code>来创建的。<code>SchedulerFactory</code>对象通过调用<code>getScheduler</code>方法就能创建和初始化调度器对象。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//创建一个Scheduler实例</span></div><div class="line">SchedulerFactory sfact = <span class="keyword">new</span> StdSchedulerFactory();</div><div class="line">Scheduler scheduler = sfact.getScheduler();</div><div class="line">scheduler.scheduleJob(jobDetail, trigger);</div><div class="line">scheduler.start();</div></pre></td></tr></table></figure>
+<h3 id="四、Spring-amp-Quartz"><a href="#四、Spring-amp-Quartz" class="headerlink" title="四、Spring&amp;Quartz"></a>四、Spring&amp;Quartz</h3><p>除了<code>Spring</code>基本依赖之外还需要加入以下依赖：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">1 <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></div><div class="line"> 2   <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></div><div class="line"> 3   <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-context-support<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></div><div class="line"> 4   <span class="tag">&lt;<span class="name">version</span>&gt;</span>4.2.6.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></div><div class="line"> 5 <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></div><div class="line"> </div><div class="line"> 6 <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></div><div class="line"> 7   <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.quartz-scheduler<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></div><div class="line"> 8   <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>quartz<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></div><div class="line"> 9   <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.2.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></div><div class="line">10 <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<h4 id="基于特定基类"><a href="#基于特定基类" class="headerlink" title="基于特定基类"></a>基于特定基类</h4><h5 id="1-编写任务类，该类需要继承自QuartzJobBean"><a href="#1-编写任务类，该类需要继承自QuartzJobBean" class="headerlink" title="1.　编写任务类，该类需要继承自QuartzJobBean"></a>1.　编写任务类，该类需要继承自QuartzJobBean</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.shallowan.quartz;</div><div class="line">  </div><div class="line"><span class="keyword">import</span> org.quartz.JobExecutionContext;</div><div class="line"><span class="keyword">import</span> org.quartz.JobExecutionException;</div><div class="line"><span class="keyword">import</span> org.slf4j.Logger;</div><div class="line"><span class="keyword">import</span> org.slf4j.LoggerFactory;</div><div class="line"><span class="keyword">import</span> org.springframework.scheduling.quartz.QuartzJobBean;</div><div class="line"></div><div class="line"> <span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SecondCron</span> <span class="keyword">extends</span> <span class="title">QuartzJobBean</span> </span>&#123;</div><div class="line">     <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger logger = LoggerFactory.getLogger(SecondCron.class);</div><div class="line">     <span class="keyword">private</span> Integer timeout;</div><div class="line"> </div><div class="line">     <span class="comment">//调度工厂实例化后，经过timeout时间开始执行调度</span></div><div class="line">     <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setTimeout</span><span class="params">(Integer timeout)</span> </span>&#123;</div><div class="line">         <span class="keyword">this</span>.timeout = timeout;</div><div class="line">     &#125;</div><div class="line"> </div><div class="line">     <span class="meta">@Override</span></div><div class="line">     <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">executeInternal</span><span class="params">(JobExecutionContext jobExecutionContext)</span> <span class="keyword">throws</span> JobExecutionException </span>&#123;</div><div class="line">        logger.info(<span class="string">"定时任务2进行中......."</span>);</div><div class="line">         <span class="comment">// do something else</span></div><div class="line">     &#125;</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+<h5 id="2-在Spring配置文件中配置作业类JobDetailFactoryBean、作业调度的触发方式（触发器）、调度工厂"><a href="#2-在Spring配置文件中配置作业类JobDetailFactoryBean、作业调度的触发方式（触发器）、调度工厂" class="headerlink" title="2.在Spring配置文件中配置作业类JobDetailFactoryBean、作业调度的触发方式（触发器）、调度工厂"></a>2.在Spring配置文件中配置作业类JobDetailFactoryBean、作业调度的触发方式（触发器）、调度工厂</h5><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">"http://www.springframework.org/schema/beans"</span></span></div><div class="line"><span class="tag">        <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></div><div class="line"><span class="tag">        <span class="attr">xmlns:task</span>=<span class="string">"http://www.springframework.org/schema/task"</span></span></div><div class="line"><span class="tag">        <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://www.springframework.org/schema/beans</span></span></div><div class="line"><span class="tag"><span class="string">         http://www.springframework.org/schema/beans/spring-beans-3.2.xsd</span></span></div><div class="line"><span class="tag"><span class="string">         http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd"</span>&gt;</span></div><div class="line"> </div><div class="line">     <span class="tag">&lt;<span class="name">bean</span> <span class="attr">name</span>=<span class="string">"secondCron"</span> <span class="attr">class</span>=<span class="string">"org.springframework.scheduling.quartz.JobDetailFactoryBean"</span>&gt;</span></div><div class="line">         <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"jobClass"</span> <span class="attr">value</span>=<span class="string">"com.shallowan.quartz.SecondCron"</span>/&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="comment">&lt;!--按照一定频率的触发器--&gt;</span></div><div class="line">    <span class="comment">&lt;!--&lt;bean id="simpleTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean"&gt;</span></div><div class="line"><span class="comment">        &lt;property name="jobDetail" ref="secondCron"/&gt;</span></div><div class="line"><span class="comment">        &lt;property name="startDelay" value="0"/&gt;</span></div><div class="line"><span class="comment">        &lt;property name="repeatInterval" value="2000"/&gt;</span></div><div class="line"><span class="comment">    &lt;/bean&gt;--&gt;</span></div><div class="line"></div><div class="line">    <span class="comment">&lt;!--Cron表达式触发器--&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"cronTrigger"</span> <span class="attr">class</span>=<span class="string">"org.springframework.scheduling.quartz.CronTriggerFactoryBean"</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"jobDetail"</span> <span class="attr">ref</span>=<span class="string">"secondCron"</span>/&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"cronExpression"</span> <span class="attr">value</span>=<span class="string">"0/5 * * * * ?"</span>/&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="comment">&lt;!--配置调度工厂--&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">"org.springframework.scheduling.quartz.SchedulerFactoryBean"</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"triggers"</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">list</span>&gt;</span></div><div class="line">                <span class="comment">&lt;!--&lt;ref bean="simpleTrigger"/&gt;--&gt;</span></div><div class="line">                <span class="tag">&lt;<span class="name">ref</span> <span class="attr">bean</span>=<span class="string">"cronTrigger"</span>/&gt;</span></div><div class="line">            <span class="tag">&lt;/<span class="name">list</span>&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="name">property</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></div></pre></td></tr></table></figure>
+<h4 id="不基于特定的基类"><a href="#不基于特定的基类" class="headerlink" title="不基于特定的基类"></a>不基于特定的基类</h4><h5 id="1-编写任务调度类"><a href="#1-编写任务调度类" class="headerlink" title="1.编写任务调度类"></a>1.编写任务调度类</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.shallowan.quartz;</div><div class="line"><span class="keyword">import</span> org.slf4j.Logger;</div><div class="line"><span class="keyword">import</span> org.slf4j.LoggerFactory;</div><div class="line"> </div><div class="line"> <span class="comment">/**</span></div><div class="line"><span class="comment">  * 基于Spring整合Quartz进行完成定时任务</span></div><div class="line"><span class="comment">  */</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ThirdCron</span> </span>&#123;</div><div class="line">     <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger logger = LoggerFactory.getLogger(ThirdCron.class); </div><div class="line">     <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">executeJob</span><span class="params">()</span> </span>&#123;</div><div class="line">         logger.info(<span class="string">"定时任务3进行中......."</span>);</div><div class="line">         <span class="comment">// do something else</span></div><div class="line">     &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h5 id="2-在spring配置文件中配置作业类MethodInvokingJobDetailFactoryBean、作业调度的触发方式（触发器）、调度工厂"><a href="#2-在spring配置文件中配置作业类MethodInvokingJobDetailFactoryBean、作业调度的触发方式（触发器）、调度工厂" class="headerlink" title="2.在spring配置文件中配置作业类MethodInvokingJobDetailFactoryBean、作业调度的触发方式（触发器）、调度工厂"></a>2.在spring配置文件中配置作业类MethodInvokingJobDetailFactoryBean、作业调度的触发方式（触发器）、调度工厂</h5><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">"http://www.springframework.org/schema/beans"</span></span></div><div class="line"><span class="tag">        <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></div><div class="line"><span class="tag">        <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://www.springframework.org/schema/beans</span></span></div><div class="line"><span class="tag"><span class="string">         http://www.springframework.org/schema/beans/spring-beans-3.2.xsd"</span>&gt;</span></div><div class="line"> </div><div class="line">     <span class="tag">&lt;<span class="name">bean</span> <span class="attr">name</span>=<span class="string">"thirdCron"</span> <span class="attr">class</span>=<span class="string">"org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean"</span>&gt;</span></div><div class="line">         <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"targetObject"</span>&gt;</span></div><div class="line">             <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">"com.shallowan.quartz.ThirdCron"</span>/&gt;</span></div><div class="line">         <span class="tag">&lt;/<span class="name">property</span>&gt;</span></div><div class="line">         <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"targetMethod"</span> <span class="attr">value</span>=<span class="string">"executeJob"</span>/&gt;</span></div><div class="line">         <span class="comment">&lt;!--作业不并发调度--&gt;</span></div><div class="line">         <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"concurrent"</span> <span class="attr">value</span>=<span class="string">"false"</span>/&gt;</span></div><div class="line">     <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></div><div class="line"> </div><div class="line">     <span class="comment">&lt;!--按照一定频率的触发器--&gt;</span></div><div class="line">    <span class="comment">&lt;!--&lt;bean id="simpleTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean"&gt;</span></div><div class="line"><span class="comment">        &lt;property name="jobDetail" ref="thirdCron"/&gt;</span></div><div class="line"><span class="comment">         &lt;property name="startDelay" value="0"/&gt;</span></div><div class="line"><span class="comment">         &lt;property name="repeatInterval" value="2000"/&gt;</span></div><div class="line"><span class="comment">     &lt;/bean&gt;--&gt;</span></div><div class="line"> </div><div class="line">     <span class="comment">&lt;!--Cron表达式触发器--&gt;</span></div><div class="line">     <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"cronTrigger"</span> <span class="attr">class</span>=<span class="string">"org.springframework.scheduling.quartz.CronTriggerFactoryBean"</span>&gt;</span></div><div class="line">         <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"jobDetail"</span> <span class="attr">ref</span>=<span class="string">"thirdCron"</span>/&gt;</span></div><div class="line">         <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"cronExpression"</span> <span class="attr">value</span>=<span class="string">"0/5 * * * * ?"</span>/&gt;</span></div><div class="line">     <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></div><div class="line"> </div><div class="line">     <span class="comment">&lt;!--配置调度工厂--&gt;</span></div><div class="line">     <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">"org.springframework.scheduling.quartz.SchedulerFactoryBean"</span>&gt;</span></div><div class="line">         <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"triggers"</span>&gt;</span></div><div class="line">             <span class="tag">&lt;<span class="name">list</span>&gt;</span></div><div class="line">                 <span class="comment">&lt;!--&lt;ref bean="simpleTrigger"/&gt;--&gt;</span></div><div class="line">                 <span class="tag">&lt;<span class="name">ref</span> <span class="attr">bean</span>=<span class="string">"cronTrigger"</span>/&gt;</span></div><div class="line">             <span class="tag">&lt;/<span class="name">list</span>&gt;</span></div><div class="line">         <span class="tag">&lt;/<span class="name">property</span>&gt;</span></div><div class="line">     <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></div><div class="line"> <span class="tag">&lt;/<span class="name">beans</span>&gt;</span></div></pre></td></tr></table></figure>
+<p><br><br><br></p>
+<blockquote>
+<p>Quartz属于重量级的定时任务框架，一般都会选择轻量级的如Spring Task定时任务进行开发，但是遇到比较棘手的，这也是一种解决问题的方式。</p>
+</blockquote>
+<p><br><br><br></p>
+
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+
+</div>
+
+    <a data-url="http://github.com/b2stry/2018/08/08/Quartz/" data-id="cjn11yq2o0009qsqexxmmo7ke" class="article-share-link"><i class="fa fa-share"></i>分享</a>
 <script>
     (function ($) {
         // Prevent duplicate binding
@@ -425,7 +639,7 @@ var _hmt = _hmt || [];
 
 </div>
 
-    <a data-url="http://github.com/b2stry/2018/07/26/Navicat常用快捷键及注意事项/" data-id="cjkif3eof001fr0qea4ybxjck" class="article-share-link"><i class="fa fa-share"></i>分享</a>
+    <a data-url="http://github.com/b2stry/2018/07/26/Navicat常用快捷键及注意事项/" data-id="cjn11yq3g001rqsqe6qmw8pbj" class="article-share-link"><i class="fa fa-share"></i>分享</a>
 <script>
     (function ($) {
         // Prevent duplicate binding
@@ -555,7 +769,7 @@ var _hmt = _hmt || [];
 
 </div>
 
-    <a data-url="http://github.com/b2stry/2018/07/11/不止代码/" data-id="cjkif3eon001pr0qe509k6tk3" class="article-share-link"><i class="fa fa-share"></i>分享</a>
+    <a data-url="http://github.com/b2stry/2018/07/11/不止代码/" data-id="cjn11yq3l0020qsqebhdv886j" class="article-share-link"><i class="fa fa-share"></i>分享</a>
 <script>
     (function ($) {
         // Prevent duplicate binding
@@ -686,7 +900,7 @@ var _hmt = _hmt || [];
 
 </div>
 
-    <a data-url="http://github.com/b2stry/2018/03/21/远程通信的几种选择/" data-id="cjkif3equ003or0qerci1lygb" class="article-share-link"><i class="fa fa-share"></i>分享</a>
+    <a data-url="http://github.com/b2stry/2018/03/21/远程通信的几种选择/" data-id="cjn11yq45003aqsqe59zvda86" class="article-share-link"><i class="fa fa-share"></i>分享</a>
 <script>
     (function ($) {
         // Prevent duplicate binding
@@ -817,7 +1031,7 @@ var _hmt = _hmt || [];
 
 </div>
 
-    <a data-url="http://github.com/b2stry/2018/03/17/Tomcat-性能调优/" data-id="cjkif3eo90019r0qefs3x5f2b" class="article-share-link"><i class="fa fa-share"></i>分享</a>
+    <a data-url="http://github.com/b2stry/2018/03/17/Tomcat-性能调优/" data-id="cjn11yq360018qsqee6hpd33w" class="article-share-link"><i class="fa fa-share"></i>分享</a>
 <script>
     (function ($) {
         // Prevent duplicate binding
@@ -952,7 +1166,7 @@ var _hmt = _hmt || [];
 
 </div>
 
-    <a data-url="http://github.com/b2stry/2018/03/13/Map中的hash/" data-id="cjkif3eni000fr0qe0d0syswq" class="article-share-link"><i class="fa fa-share"></i>分享</a>
+    <a data-url="http://github.com/b2stry/2018/03/13/Map中的hash/" data-id="cjn11yq2u000jqsqe0joe7ytz" class="article-share-link"><i class="fa fa-share"></i>分享</a>
 <script>
     (function ($) {
         // Prevent duplicate binding
@@ -1083,7 +1297,7 @@ var _hmt = _hmt || [];
 
 </div>
 
-    <a data-url="http://github.com/b2stry/2018/03/05/springboot集成swagger2，构建优雅的Restful-API/" data-id="cjkif3eo40014r0qe6nheewte" class="article-share-link"><i class="fa fa-share"></i>分享</a>
+    <a data-url="http://github.com/b2stry/2018/03/05/springboot集成swagger2，构建优雅的Restful-API/" data-id="cjn11yq330012qsqe8icutuli" class="article-share-link"><i class="fa fa-share"></i>分享</a>
 <script>
     (function ($) {
         // Prevent duplicate binding
@@ -1214,7 +1428,7 @@ var _hmt = _hmt || [];
 
 </div>
 
-    <a data-url="http://github.com/b2stry/2018/02/22/消息队列之选型对比/" data-id="cjkif3epm002vr0qezzebugp8" class="article-share-link"><i class="fa fa-share"></i>分享</a>
+    <a data-url="http://github.com/b2stry/2018/02/22/消息队列之选型对比/" data-id="cjn11yq40002xqsqetar1xutm" class="article-share-link"><i class="fa fa-share"></i>分享</a>
 <script>
     (function ($) {
         // Prevent duplicate binding
@@ -1347,139 +1561,7 @@ var _hmt = _hmt || [];
 
 </div>
 
-    <a data-url="http://github.com/b2stry/2018/02/07/10个有趣但毫无用处的Linux命令/" data-id="cjkif3en20004r0qejo1x5dqn" class="article-share-link"><i class="fa fa-share"></i>分享</a>
-<script>
-    (function ($) {
-        // Prevent duplicate binding
-        if (typeof(__SHARE_BUTTON_BINDED__) === 'undefined' || !__SHARE_BUTTON_BINDED__) {
-            __SHARE_BUTTON_BINDED__ = true;
-        } else {
-            return;
-        }
-        $('body').on('click', function() {
-            $('.article-share-box.on').removeClass('on');
-        }).on('click', '.article-share-link', function(e) {
-            e.stopPropagation();
-
-            var $this = $(this),
-                url = $this.attr('data-url'),
-                encodedUrl = encodeURIComponent(url),
-                id = 'article-share-box-' + $this.attr('data-id'),
-                offset = $this.offset(),
-                box;
-
-            if ($('#' + id).length) {
-                box = $('#' + id);
-
-                if (box.hasClass('on')){
-                    box.removeClass('on');
-                    return;
-                }
-            } else {
-                var html = [
-                    '<div id="' + id + '" class="article-share-box">',
-                        '<input class="article-share-input" value="' + url + '">',
-                        '<div class="article-share-links">',
-                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="fa fa-twitter article-share-twitter" target="_blank" title="Twitter"></a>',
-                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="fa fa-facebook article-share-facebook" target="_blank" title="Facebook"></a>',
-                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="fa fa-pinterest article-share-pinterest" target="_blank" title="Pinterest"></a>',
-                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="fa fa-google article-share-google" target="_blank" title="Google+"></a>',
-                        '</div>',
-                    '</div>'
-                ].join('');
-
-              box = $(html);
-
-              $('body').append(box);
-            }
-
-            $('.article-share-box.on').hide();
-
-            box.css({
-                top: offset.top + 25,
-                left: offset.left
-            }).addClass('on');
-
-        }).on('click', '.article-share-box', function (e) {
-            e.stopPropagation();
-        }).on('click', '.article-share-box-input', function () {
-            $(this).select();
-        }).on('click', '.article-share-box-link', function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-
-            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
-        });
-    })(jQuery);
-</script>
-
-            
-    
-
-        </footer>
-    </div>
-    
-</article>
-
-
-
-    <article id="post-消息队列之RabbitMQ" class="article article-type-post" itemscope itemprop="blogPost">
-    <div class="article-inner">
-        
-        
-            <header class="article-header">
-                
-    
-        <h1 itemprop="name">
-            <a class="article-title" href="/2018/02/03/消息队列之RabbitMQ/">消息队列之RabbitMQ</a>
-        </h1>
-    
-
-                
-                    <div class="article-meta">
-                        
-    <div class="article-date">
-        <i class="fa fa-calendar"></i>
-        <a href="/2018/02/03/消息队列之RabbitMQ/">
-            <time datetime="2018-02-03T07:14:07.000Z" itemprop="datePublished">2018-02-03</time>
-        </a>
-    </div>
-
-
-                        
-    <div class="article-category">
-    	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/rabbitmq/">rabbitmq</a>
-    </div>
-
-                        
-    <div class="article-tag">
-        <i class="fa fa-tag"></i>
-        <a class="tag-link" href="/tags/消息中间件/">消息中间件</a>
-    </div>
-
-                    </div>
-                
-            </header>
-        
-        
-        <div class="article-entry" itemprop="articleBody">
-        
-            <p><h2 id="什么叫消息队列"><a href="#什么叫消息队列" class="headerlink" title="什么叫消息队列"></a>什么叫消息队列</h2><p>消息（Message）是指在应用间传送的数据。消息可以非常简单，比如只包含文本字符串，也可以更复杂，可能包含嵌入对象。</p>
-<p>消息队列（Message Queue）是一种应用间的通信方式，消息发送后可以立即返回，由消息系统来确保消息的可靠传递。消息发布者只管把消息发布到 MQ 中而不用管谁来取，消息使用者只管从 MQ 中取消息而不管是谁发布的。这样发布者和使用者都不用知道对方的存在。<br></p>
-            <p class="article-more-link">
-                <a style="text-shadow: 0px 0px #fff" href="/2018/02/03/消息队列之RabbitMQ/#more">查看更多</a>
-            </p>
-        
-        </div>
-        <footer class="article-footer">
-            <div class="share-container">
-
-
-
-</div>
-
-    <a data-url="http://github.com/b2stry/2018/02/03/消息队列之RabbitMQ/" data-id="cjkif3eq9003ar0qeqszv8a2m" class="article-share-link"><i class="fa fa-share"></i>分享</a>
+    <a data-url="http://github.com/b2stry/2018/02/07/10个有趣但毫无用处的Linux命令/" data-id="cjn11yq2d0002qsqeczobxa7d" class="article-share-link"><i class="fa fa-share"></i>分享</a>
 <script>
     (function ($) {
         // Prevent duplicate binding
@@ -1591,6 +1673,25 @@ var _hmt = _hmt || [];
                     <li>
                         
                         <div class="item-thumbnail">
+                            <a href="/2018/08/08/Quartz/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Quartz/">Quartz</a></p>
+                            <p class="item-title"><a href="/2018/08/08/Quartz/" class="title">Quartz</a></p>
+                            <p class="item-date"><time datetime="2018-08-08T12:06:28.000Z" itemprop="datePublished">2018-08-08</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
                             <a href="/2018/07/26/Navicat常用快捷键及注意事项/" class="thumbnail">
     
     
@@ -1645,25 +1746,6 @@ var _hmt = _hmt || [];
                         </div>
                     </li>
                 
-                    <li>
-                        
-                        <div class="item-thumbnail">
-                            <a href="/2018/03/17/Tomcat-性能调优/" class="thumbnail">
-    
-    
-        <span class="thumbnail-image thumbnail-none"></span>
-    
-</a>
-
-                        </div>
-                        
-                        <div class="item-inner">
-                            <p class="item-category"><a class="article-category-link" href="/categories/tomcat调优/">tomcat调优</a></p>
-                            <p class="item-title"><a href="/2018/03/17/Tomcat-性能调优/" class="title">Tomcat 性能调优</a></p>
-                            <p class="item-date"><time datetime="2018-03-17T14:53:21.000Z" itemprop="datePublished">2018-03-17</time></p>
-                        </div>
-                    </li>
-                
             </ul>
         </div>
     </div>
@@ -1673,7 +1755,7 @@ var _hmt = _hmt || [];
     <div class="widget-wrap">
         <h3 class="widget-title">分类</h3>
         <div class="widget">
-            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Ajax/">Ajax</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Elasticsearch/">Elasticsearch</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Js/">Js</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring-Boot/">Spring Boot</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/activemq/">activemq</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/algorithm/">algorithm</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/command/">command</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/docker/">docker</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/fetch/">fetch</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/hash/">hash</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/interview/">interview</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jsr303/">jsr303</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/kafka/">kafka</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/navicat/">navicat</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/network/">network</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/python/">python</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/rabbitmq/">rabbitmq</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/redis/">redis</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/regex/">regex</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/spring/">spring</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/sql/">sql</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/swagger/">swagger</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/thymeleaf/">thymeleaf</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/tomcat调优/">tomcat调优</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/不止代码/">不止代码</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/消息中间件/">消息中间件</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/读书/">读书</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/远程通信/">远程通信</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/集群/">集群</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/集群/分布式/">分布式</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/集群/分布式/云计算/">云计算</a><span class="category-list-count">1</span></li></ul></li></ul></li></ul>
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Ajax/">Ajax</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Elasticsearch/">Elasticsearch</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Js/">Js</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Quartz/">Quartz</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring-Boot/">Spring Boot</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/activemq/">activemq</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/algorithm/">algorithm</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/command/">command</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/docker/">docker</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/fetch/">fetch</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/hash/">hash</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/interview/">interview</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jsr303/">jsr303</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/kafka/">kafka</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/navicat/">navicat</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/network/">network</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/python/">python</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/rabbitmq/">rabbitmq</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/redis/">redis</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/regex/">regex</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/spring/">spring</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/sql/">sql</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/swagger/">swagger</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/thymeleaf/">thymeleaf</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/tomcat调优/">tomcat调优</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/不止代码/">不止代码</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/消息中间件/">消息中间件</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/读书/">读书</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/远程通信/">远程通信</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/集群/">集群</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/集群/分布式/">分布式</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/集群/分布式/云计算/">云计算</a><span class="category-list-count">1</span></li></ul></li></ul></li></ul>
         </div>
     </div>
 
@@ -1682,7 +1764,7 @@ var _hmt = _hmt || [];
     <div class="widget-wrap">
         <h3 class="widget-title">归档</h3>
         <div class="widget">
-            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/9420/04/">April 9420</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a><span class="archive-list-count">2</span></li></ul>
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/9420/04/">April 9420</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a><span class="archive-list-count">2</span></li></ul>
         </div>
     </div>
 
@@ -1691,7 +1773,7 @@ var _hmt = _hmt || [];
     <div class="widget-wrap">
         <h3 class="widget-title">标签</h3>
         <div class="widget">
-            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ajax/">Ajax</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Elasticsearch/">Elasticsearch</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JSP/">JSP</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Boot/">Spring Boot</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/fetch/">fetch</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hash/">hash</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jsr303/">jsr303</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/">linux</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/">mysql</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/navicat/">navicat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/">redis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring/">spring</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql/">sql</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/swagger/">swagger</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/thymeleaf/">thymeleaf</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat调优/">tomcat调优</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vim/">vim</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/一键评教/">一键评教</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/不止代码/">不止代码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/云计算/">云计算</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/分布式/">分布式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/正则表达式/">正则表达式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/消息中间件/">消息中间件</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/计算机网络/">计算机网络</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/读书/">读书</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/远程通信/">远程通信</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/集群/">集群</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/面试/">面试</a><span class="tag-list-count">1</span></li></ul>
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ajax/">Ajax</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Elasticsearch/">Elasticsearch</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JSP/">JSP</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Quartz/">Quartz</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Boot/">Spring Boot</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/fetch/">fetch</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hash/">hash</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jsr303/">jsr303</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/">linux</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/">mysql</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/navicat/">navicat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/">redis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring/">spring</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql/">sql</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/swagger/">swagger</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/thymeleaf/">thymeleaf</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat调优/">tomcat调优</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vim/">vim</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/一键评教/">一键评教</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/不止代码/">不止代码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/云计算/">云计算</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/分布式/">分布式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/正则表达式/">正则表达式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/消息中间件/">消息中间件</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/计算机网络/">计算机网络</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/读书/">读书</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/远程通信/">远程通信</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/集群/">集群</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/面试/">面试</a><span class="tag-list-count">1</span></li></ul>
         </div>
     </div>
 
@@ -1700,7 +1782,7 @@ var _hmt = _hmt || [];
     <div class="widget-wrap">
         <h3 class="widget-title">标签云</h3>
         <div class="widget tagcloud">
-            <a href="/tags/Ajax/" style="font-size: 13.33px;">Ajax</a> <a href="/tags/Elasticsearch/" style="font-size: 10px;">Elasticsearch</a> <a href="/tags/JSP/" style="font-size: 10px;">JSP</a> <a href="/tags/Java/" style="font-size: 13.33px;">Java</a> <a href="/tags/Python/" style="font-size: 10px;">Python</a> <a href="/tags/Spring-Boot/" style="font-size: 16.67px;">Spring Boot</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/fetch/" style="font-size: 10px;">fetch</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/hash/" style="font-size: 10px;">hash</a> <a href="/tags/java/" style="font-size: 13.33px;">java</a> <a href="/tags/jsr303/" style="font-size: 10px;">jsr303</a> <a href="/tags/linux/" style="font-size: 13.33px;">linux</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/navicat/" style="font-size: 10px;">navicat</a> <a href="/tags/python/" style="font-size: 13.33px;">python</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a> <a href="/tags/shell/" style="font-size: 13.33px;">shell</a> <a href="/tags/spring/" style="font-size: 10px;">spring</a> <a href="/tags/sql/" style="font-size: 10px;">sql</a> <a href="/tags/swagger/" style="font-size: 10px;">swagger</a> <a href="/tags/thymeleaf/" style="font-size: 10px;">thymeleaf</a> <a href="/tags/tomcat/" style="font-size: 10px;">tomcat</a> <a href="/tags/tomcat调优/" style="font-size: 10px;">tomcat调优</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/一键评教/" style="font-size: 10px;">一键评教</a> <a href="/tags/不止代码/" style="font-size: 10px;">不止代码</a> <a href="/tags/云计算/" style="font-size: 10px;">云计算</a> <a href="/tags/分布式/" style="font-size: 10px;">分布式</a> <a href="/tags/正则表达式/" style="font-size: 10px;">正则表达式</a> <a href="/tags/消息中间件/" style="font-size: 20px;">消息中间件</a> <a href="/tags/算法/" style="font-size: 13.33px;">算法</a> <a href="/tags/计算机网络/" style="font-size: 10px;">计算机网络</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/远程通信/" style="font-size: 10px;">远程通信</a> <a href="/tags/集群/" style="font-size: 10px;">集群</a> <a href="/tags/面试/" style="font-size: 10px;">面试</a>
+            <a href="/tags/Ajax/" style="font-size: 13.33px;">Ajax</a> <a href="/tags/Elasticsearch/" style="font-size: 10px;">Elasticsearch</a> <a href="/tags/JSP/" style="font-size: 10px;">JSP</a> <a href="/tags/Java/" style="font-size: 13.33px;">Java</a> <a href="/tags/Python/" style="font-size: 10px;">Python</a> <a href="/tags/Quartz/" style="font-size: 10px;">Quartz</a> <a href="/tags/Spring-Boot/" style="font-size: 16.67px;">Spring Boot</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/fetch/" style="font-size: 10px;">fetch</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/hash/" style="font-size: 10px;">hash</a> <a href="/tags/java/" style="font-size: 13.33px;">java</a> <a href="/tags/jsr303/" style="font-size: 10px;">jsr303</a> <a href="/tags/linux/" style="font-size: 13.33px;">linux</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/navicat/" style="font-size: 10px;">navicat</a> <a href="/tags/python/" style="font-size: 13.33px;">python</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a> <a href="/tags/shell/" style="font-size: 13.33px;">shell</a> <a href="/tags/spring/" style="font-size: 10px;">spring</a> <a href="/tags/sql/" style="font-size: 10px;">sql</a> <a href="/tags/swagger/" style="font-size: 10px;">swagger</a> <a href="/tags/thymeleaf/" style="font-size: 10px;">thymeleaf</a> <a href="/tags/tomcat/" style="font-size: 10px;">tomcat</a> <a href="/tags/tomcat调优/" style="font-size: 10px;">tomcat调优</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/一键评教/" style="font-size: 10px;">一键评教</a> <a href="/tags/不止代码/" style="font-size: 10px;">不止代码</a> <a href="/tags/云计算/" style="font-size: 10px;">云计算</a> <a href="/tags/分布式/" style="font-size: 10px;">分布式</a> <a href="/tags/正则表达式/" style="font-size: 10px;">正则表达式</a> <a href="/tags/消息中间件/" style="font-size: 20px;">消息中间件</a> <a href="/tags/算法/" style="font-size: 13.33px;">算法</a> <a href="/tags/计算机网络/" style="font-size: 10px;">计算机网络</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/远程通信/" style="font-size: 10px;">远程通信</a> <a href="/tags/集群/" style="font-size: 10px;">集群</a> <a href="/tags/面试/" style="font-size: 10px;">面试</a>
         </div>
     </div>
 
